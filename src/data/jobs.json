@@ -1,0 +1,209 @@
+{
+  "0": {
+    "id": 0,
+    "short_name": "_"
+  },
+  "1": {
+    "id": 1,
+    "icon": "/cj/1/gladiator.png",
+    "display_name": "Gladiator",
+    "short_name": "GLA",
+    "role": 1
+  },
+  "2": {
+    "id": 2,
+    "icon": "/cj/1/pugilist.png",
+    "display_name": "Pugilist",
+    "short_name": "PGL",
+    "role": 2
+  },
+  "3": {
+    "id": 3,
+    "icon": "/cj/1/marauder.png",
+    "display_name": "Marauder",
+    "short_name": "MRD",
+    "role": 1
+  },
+  "4": {
+    "id": 4,
+    "icon": "/cj/1/lancer.png",
+    "display_name": "Lancer",
+    "short_name": "LNC",
+    "role": 2
+  },
+  "5": {
+    "id": 5,
+    "icon": "/cj/1/archer.png",
+    "display_name": "Archer",
+    "short_name": "ARC",
+    "role": 3
+  },
+  "6": {
+    "id": 6,
+    "icon": "/cj/1/conjurer.png",
+    "display_name": "Conjurer",
+    "short_name": "CNJ",
+    "role": 4
+  },
+  "7": {
+    "id": 7,
+    "icon": "/cj/1/thaumaturge.png",
+    "display_name": "Thaumaturge",
+    "short_name": "THM",
+    "role": 3
+  },
+  "19": {
+    "id": 19,
+    "icon": "/cj/1/paladin.png",
+    "display_name": "Paladin",
+    "short_name": "PLD",
+    "role": 1
+  },
+  "20": {
+    "id": 20,
+    "icon": "/cj/1/monk.png",
+    "display_name": "Monk",
+    "short_name": "MNK",
+    "role": 2
+  },
+  "21": {
+    "id": 21,
+    "icon": "/cj/1/warrior.png",
+    "display_name": "Warrior",
+    "short_name": "WAR",
+    "role": 1
+  },
+  "22": {
+    "id": 22,
+    "icon": "/cj/1/dragoon.png",
+    "display_name": "Dragoon",
+    "short_name": "DRG",
+    "role": 2
+  },
+  "23": {
+    "id": 23,
+    "icon": "/cj/1/bard.png",
+    "display_name": "Bard",
+    "short_name": "BRD",
+    "role": 3
+  },
+  "24": {
+    "id": 24,
+    "icon": "/cj/1/whitemage.png",
+    "display_name": "White Mage",
+    "short_name": "WHM",
+    "role": 4
+  },
+  "25": {
+    "id": 25,
+    "icon": "/cj/1/blackmage.png",
+    "display_name": "Black Mage",
+    "short_name": "BLM",
+    "role": 3
+  },
+  "26": {
+    "id": 26,
+    "icon": "/cj/1/arcanist.png",
+    "display_name": "Arcanist",
+    "short_name": "ACN",
+    "role": 3
+  },
+  "27": {
+    "id": 27,
+    "icon": "/cj/1/summoner.png",
+    "display_name": "Summoner",
+    "short_name": "SMN",
+    "role": 3
+  },
+  "28": {
+    "id": 28,
+    "icon": "/cj/1/scholar.png",
+    "display_name": "Scholar",
+    "short_name": "SCH",
+    "role": 4
+  },
+  "29": {
+    "id": 29,
+    "icon": "/cj/1/rogue.png",
+    "display_name": "Rogue",
+    "short_name": "ROG",
+    "role": 2
+  },
+  "30": {
+    "id": 30,
+    "icon": "/cj/1/ninja.png",
+    "display_name": "Ninja",
+    "short_name": "NIN",
+    "role": 2
+  },
+  "31": {
+    "id": 31,
+    "icon": "/cj/1/machinist.png",
+    "display_name": "Machinist",
+    "short_name": "MCH",
+    "role": 3
+  },
+  "32": {
+    "id": 32,
+    "icon": "/cj/1/darkknight.png",
+    "display_name": "Dark Knight",
+    "short_name": "DRK",
+    "role": 1
+  },
+  "33": {
+    "id": 33,
+    "icon": "/cj/1/astrologian.png",
+    "display_name": "Astrologian",
+    "short_name": "AST",
+    "role": 4
+  },
+  "34": {
+    "id": 34,
+    "icon": "/cj/1/samurai.png",
+    "display_name": "Samurai",
+    "short_name": "SAM",
+    "role": 2
+  },
+  "35": {
+    "id": 35,
+    "icon": "/cj/1/redmage.png",
+    "display_name": "Red Mage",
+    "short_name": "RDM",
+    "role": 3
+  },
+  "36": {
+    "id": 36,
+    "icon": "/cj/1/bluemage.png",
+    "display_name": "Blue Mage",
+    "short_name": "BLU",
+    "role": 3
+  },
+  "37": {
+    "id": 37,
+    "icon": "/cj/1/gunbreaker.png",
+    "display_name": "Gunbreaker",
+    "short_name": "GNB",
+    "role": 1
+  },
+  "38": {
+    "id": 38,
+    "icon": "/cj/1/dancer.png",
+    "display_name": "Dancer",
+    "short_name": "DNC",
+    "role": 3
+  },
+  "39": {
+    "id": 39,
+    "icon": "/cj/1/reaper.png",
+    "display_name": "Reaper",
+    "short_name": "RPR",
+    "role": 2
+  },
+  "40": {
+    "id": 40,
+    "icon": "/cj/1/sage.png",
+    "display_name": "Sage",
+    "short_name": "SGE",
+    "role": 4
+  }
+}
