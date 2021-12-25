@@ -41,7 +41,7 @@ function WizardDynamis() {
     }, [ws])
 
     return (
-        <p>Foo</p>
+        <p>Dynamis</p>
     )
 }
 

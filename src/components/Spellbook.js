@@ -1,13 +1,15 @@
 // Import core components
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 // Import our components
 import { WebSocketContext } from 'contexts/WebSocket'
-import { initActions, initYou, selectActions, selectParty, selectYou, updateParty } from 'db/slices/spellbook'
-import * as Utils from 'toolkits/utils'
+import { initYou, selectActions, selectResting, selectParty, selectYou, updateResting, updateParty } from 'db/slices/spellbook'
 
-import actions_list from 'data/actions'
+import * as Utils from 'toolkits/utils'
+import * as Keys from 'toolkits/keys'
+
+// import actions_list from 'data/actions'
 
 // Import style
 // ...
@@ -16,27 +18,34 @@ function WizardSpellbook() {
     const
         // Redux
         dispatch = useDispatch(),
+        // Context
+        ws = useContext(WebSocketContext),
+        // Variables
         cache = {
             actions: useSelector(selectActions),
             party: useSelector(selectParty),
+            recast: 2.5,
             you: useSelector(selectYou),
         },
-        ws = useContext(WebSocketContext)
+        resting = useSelector(selectResting),
+        // Ref
+        $spellbook = useRef(null)
 
     function parseAction(line) {
-        const [, , , source, id, action, , target, ..._] = line
-        // console.log(`${source}: ${action} (${parseInt(id, 16)}) on ${target}`)
+        const
+            [code, , _source_id, source, _id, action, _target_id, target, ..._] = line,
+            id = parseInt(_id, 16),
+            recast = +Utils.getObjValue(cache.actions, `${id}.cooldown`)
+
+        console.log(`${source}: ${action} (${id}) on ${target}`)
 
         // Only look at your own spells for now
         if (source !== cache.you) return false
 
         // Action has a cooldown
-        if (Utils.getObjValue(cache.actions, `${id}.cooldown`)) {
+        if (recast > cache.recast) {
             // Add action to queue
-            console.log(`${action} will refresh in ${cache.actions[id].cooldown} seconds.`)
-            setTimeout(() => {
-                console.log(`${action} is ready.`)
-            }, cache.actions[id].cooldown * 1000)
+            dispatch(updateResting(id))
         }
 
         return true
@@ -72,12 +81,21 @@ function WizardSpellbook() {
         })
     }, [ws])
 
+    // Testing
     useEffect(() => {
-        dispatch(initActions(actions_list))
+        parseAction(['21', '|', '|', 'Shekawa Phen', 'BC', 'Sacred Soil', '|', 'Shekawa Phen', '|'])
+        parseAction(['21', '|', '|', 'Shekawa Phen', 'B9', 'Adloquium', '|', 'Shekawa Phen', '|'])
     }, [])
 
     return (
-        <p>Foo</p>
+        <>
+            {/* Spellbook */}
+            <div ref={$spellbook} className="spellbook position-absolute d-flex justify-content-center align-items-center rounded p-2">
+                {Object.values(resting).length > 0 && Object.values(resting).map((action, i) => (
+                    <img key={i} className="position-relative rounded" src={`${Keys.get('xivapi.public')}${action.icon}`} alt={action.display_name} />
+                ))}
+            </div>
+        </>
     )
 }
 

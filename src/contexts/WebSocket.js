@@ -222,7 +222,7 @@ function Provider(params) {
         const _ws = ws.current
 
         // Open the connection
-        _ws.connect()
+        // _ws.connect()
 
         // ComponentWillUnmount equivalent
         return () => {

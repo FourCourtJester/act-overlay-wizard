@@ -8,6 +8,7 @@ import App from 'App'
 import store from 'db/store'
 
 // Import style
+import 'scss/bootstrap.scss'
 import 'scss/wizard.scss'
 
 ReactDOM.render(

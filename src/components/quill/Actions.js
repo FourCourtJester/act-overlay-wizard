@@ -72,7 +72,7 @@ function QuillActions() {
                                 icon: response.data.IconHD,
                                 display_name: response.data.Name_en,
                                 jobs: jobAssignment(response.data.ClassJobCategory.Name_en),
-                                cooldown: response.data.Recast100ms / 10,
+                                recast: response.data.Recast100ms / 10,
                                 duration: +getDuration(response.data.Description_en) || 0
                             }
                         ))

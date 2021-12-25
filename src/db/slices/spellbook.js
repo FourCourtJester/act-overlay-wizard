@@ -2,13 +2,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 // Import our components
-import { setObjValue } from 'toolkits/utils'
+import actions_json from 'data/actions'
 
 const
     initial_state = {
+        actions: actions_json,
+        resting: {},
         party: {},
-        actions: {},
-        you: null,
+        you: 'Shekawa Phen',
     }
 
 // Jobs Slice
@@ -18,14 +19,14 @@ export const spellbook = createSlice({
         obj: initial_state,
     },
     reducers: {
-        initActions: (state, action) => {
-            state.actions = action.payload
-        },
         initYou: (state, action) => {
-            state.you = action.payload
+            state.obj.you = action.payload
+        },
+        updateResting: (state, action) => {
+            state.obj.resting[action.payload] = { ...state.obj.actions[action.payload] }
         },
         updateParty: (state, action) => {
-            state.party = action.payload
+            state.obj.party = action.payload
         },
     }
 })
@@ -34,11 +35,13 @@ export const spellbook = createSlice({
 export const {
     initActions,
     initYou,
+    updateResting,
     updateParty,
 } = spellbook.actions
 
 // Selector functions
 export const selectActions = (state) => state.spellbook.obj.actions
+export const selectResting = (state) => state.spellbook.obj.resting
 export const selectParty = (state) => state.spellbook.obj.party
 export const selectYou = (state) => state.spellbook.obj.you
 

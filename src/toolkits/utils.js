@@ -74,12 +74,14 @@ export function getObjPaths(obj = {}, prefix = '') {
  * @param {Object} [opts.split=true]
  * @return {*}
  */
-export function getObjValue(obj = {}, path = '', opts = { split: true }) {
+export function getObjValue(obj = {}, _path = '', opts = { split: true }) {
     if (obj === undefined) return undefined
 
+    const path = !Array.isArray(_path) ? opts.split ? _path.toString().split('.') : [_path.toString()] : _path
+
     // Convert the path to an Array if it is already not
-    if (opts.split && !Array.isArray(path)) path = path.split('.')
-    else if (!Array.isArray(path)) path = [path]
+    // if (opts.split && !Array.isArray(path)) path = path.toString().split('.')
+    // else if (!Array.isArray(path)) path = [path.toString()]
 
     // If the prop does not exist, return undefined
     // Otherwise, return the value
@@ -98,10 +100,12 @@ export function getObjValue(obj = {}, path = '', opts = { split: true }) {
  * @param {Object} [opts.split=true]
  * @return {Object}
  */
-export function setObjValue(obj = {}, path = [], val = undefined, opts = { split: true }) {
+export function setObjValue(obj = {}, _path = [], val = undefined, opts = { split: true }) {
     // Convert the path to an Array if it is already not
-    if (opts.split && !Array.isArray(path)) path = path.split('.')
-    else if (!Array.isArray(path)) path = [path]
+    // if (opts.split && !Array.isArray(path)) path = path.split('.')
+    // else if (!Array.isArray(path)) path = [path]
+
+    const path = !Array.isArray(_path) ? opts.split ? _path.toString().split('.') : [_path.toString()] : _path
 
     if (!path.length) {
         // Edge case: No path length. Just return
