@@ -1,4 +1,22 @@
 /**
+ * Converts Decimal to Hexadecimal
+ * @param {Number} num 
+ * @returns 
+ */
+ export function d2h(num) {
+    return +(num.toString(16))
+}
+
+/**
+ * Converts Hexadecimal to Decimal
+ * @param {Number} num 
+ * @returns 
+ */
+export function h2d(num) {
+    return parseInt(num, 16)
+}
+
+/**
  * Capitalizes the first character of a String
  * @param {String} str - The string
  * @return {String}

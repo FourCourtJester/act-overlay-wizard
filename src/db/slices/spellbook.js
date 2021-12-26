@@ -2,9 +2,11 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 // Import our components
-// ...
+import * as Storage from 'toolkits/storage'
+import * as Utils from 'toolkits/utils'
 
 const
+    name = 'spellbook',
     initial_state = {
         resting: {},
         party: {},
@@ -13,16 +15,20 @@ const
 
 // Jobs Slice
 export const spellbook = createSlice({
-    name: 'spellbook',
+    name: name,
     initialState: {
         obj: initial_state,
     },
     reducers: {
-        initYou: (state, action) => {
-            state.obj.you = action.payload
+        initYou: (state, { payload: name }) => {
+            state.obj.you = name
         },
-        updateResting: (state, action) => {
-            state.obj.resting[action.payload] = { ...action.payload }
+        updateResting: (state, { payload: id }) => {
+            id = Utils.h2d(id)
+
+            const action = Storage.get(`action.${id}`)
+
+            state.obj.resting[action.id] = { ...action }
         },
         updateParty: (state, action) => {
             state.obj.party = action.payload
@@ -32,7 +38,6 @@ export const spellbook = createSlice({
 
 // Reducer functions
 export const {
-    initActions,
     initYou,
     updateResting,
     updateParty,

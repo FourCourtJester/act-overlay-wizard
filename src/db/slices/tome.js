@@ -1,24 +1,50 @@
 // Import core components
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 // Import our components
-import actions_json from 'data/actions'
-import instances_json from 'data/instances'
-import jobs_json from 'data/jobs'
+import * as Storage from 'toolkits/storage'
+import * as Utils from 'toolkits/utils'
+import * as XIVAPI from 'toolkits/xivapi'
 
 const
+    name = 'tome',
     initial_state = {
-        actions: actions_json,
-        instances: instances_json,
-        jobs: jobs_json
+        actions: {},
+        instances: {},
+        jobs: {},
     }
+
+export const updateAction = createAsyncThunk(`${name}/updateAction`, async (id, api) => {
+    id = Utils.h2d(id)
+    
+    let
+        action = Storage.get(`action.${id}`),
+        update_required = false
+
+    // No stored actions
+    if (action === null) {
+        action = await XIVAPI.get('action', id)
+        update_required = true
+    }
+
+    // Update stored action
+    if (update_required) Storage.set(`action.${id}`, action)
+
+    // Update state
+    return action
+})
 
 // Jobs Slice
 export const tome = createSlice({
-    name: 'tome',
+    name: name,
     initialState: {
         obj: initial_state,
-    }
+    },
+    extraReducers: {
+        [updateAction.fulfilled]: (state, action) => {
+            state.obj.actions[action.payload.id] = action.payload
+        },
+    },
 })
 
 // Reducer functions
