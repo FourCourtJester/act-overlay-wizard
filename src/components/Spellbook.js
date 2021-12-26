@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // Import our components
 import { WebSocketContext } from 'contexts/WebSocket'
-import { initYou, selectActions, selectResting, selectParty, selectYou, updateResting, updateParty } from 'db/slices/spellbook'
+import { initYou, selectResting, selectParty, selectYou, updateResting, updateParty } from 'db/slices/spellbook'
+import { selectActions } from 'db/slices/tome'
 
 import * as Utils from 'toolkits/utils'
 import * as Keys from 'toolkits/keys'
@@ -35,17 +36,17 @@ function WizardSpellbook() {
         const
             [code, , _source_id, source, _id, action, _target_id, target, ..._] = line,
             id = parseInt(_id, 16),
-            recast = +Utils.getObjValue(cache.actions, `${id}.cooldown`)
+            recast = +Utils.getObjValue(cache.actions, `${id}.recast`)
 
         console.log(`${source}: ${action} (${id}) on ${target}`)
 
         // Only look at your own spells for now
         if (source !== cache.you) return false
 
-        // Action has a cooldown
+        // Action has a recast timer
         if (recast > cache.recast) {
             // Add action to queue
-            dispatch(updateResting(id))
+            dispatch(updateResting(Utils.getObjValue(cache.actions, id)))
         }
 
         return true
@@ -90,9 +91,13 @@ function WizardSpellbook() {
     return (
         <>
             {/* Spellbook */}
-            <div ref={$spellbook} className="spellbook position-absolute d-flex justify-content-center align-items-center rounded p-2">
+            <div ref={$spellbook} className="spellbook position-absolute d-flex justify-content-center align-items-center p-2">
                 {Object.values(resting).length > 0 && Object.values(resting).map((action, i) => (
-                    <img key={i} className="position-relative rounded" src={`${Keys.get('xivapi.public')}${action.icon}`} alt={action.display_name} />
+                    <span className="action-wrap position-relative d-flex overflow-hidden">
+                        <span className="action position-relative d-block overflow-hidden w-100 h-100">
+                            <img key={i} className="position-relative w-100 h-100" src={`${Keys.get('xivapi.public')}${action.icon}`} alt={action.display_name} />
+                        </span>
+                    </span>
                 ))}
             </div>
         </>
