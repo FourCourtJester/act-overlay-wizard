@@ -117,7 +117,7 @@ class WS {
                     call: 'subscribe',
                     events: [
                         // "onOverlayDataUpdate",
-                        "SendCharName",
+                        // "SendCharName",
                         // "CombatData",
                         // "EnmityAggroList",
                         // "EnmityTargetData",
@@ -214,27 +214,27 @@ class WS {
 function Provider(params) {
     const
         { ...props } = params,
-        _ws = new WS(),
-        ws = useRef(_ws)
+        __ws = new WS(),
+        _ws = useRef(__ws)
 
     // ComponentDidMount equivalent
     useEffect(() => {
-        const _ws = ws.current
+        const ws = _ws.current
 
         // Open the connection
-        // _ws.connect()
+        ws.connect()
 
         // ComponentWillUnmount equivalent
         return () => {
             // Close the connection
-            _ws.disconnect(true)
+            ws.disconnect(true)
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
-        <Context.Provider value={ws.current} {...props} />
+        <Context.Provider value={_ws.current} {...props} />
     )
 }
 

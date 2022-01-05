@@ -1,84 +1,122 @@
-@use 'bootstrap' as bs;
+@use "bootstrap" as bs;
 
 body {
-    background: url("../../public/example_ui_2.jpg");
+    // background: url("../../public/example_ui_2.jpg");
+    background: transparent;
     color: bs.$black;
+
+    // &.locked {
+        // 
+    // }
+
+    &.unlocked {
+        .spellbook-wrap {
+            .spellbook {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    }
 }
 
 ._error {
-    background: rgba(0, 0, 0, .5);
+    background: rgba(0, 0, 0, 0.5);
     color: bs.$light;
 }
 
 // Spellbook reminders
-.spellbook{
-    background-color: bs.$gray-500;
-    border-radius: bs.$border-radius-lg;
-    box-shadow: 0px 0px 6px bs.$black;
-    top:510px;
-    left:1049px;
-    opacity:1;
+.spellbook-wrap {
+    bottom: 610px;
+    left: 0;
 
-    // Actions
-    .action-wrap {
-        width:38px;
-        height:38px;
-        border:1px solid bs.$black;
+    .spellbook {
+        background-color: bs.$gray-200;
         border-radius: bs.$border-radius-lg;
-        margin-left:map-get(bs.$spacers, 2);
-        z-index:1;
+        box-shadow: 0px 0px 6px bs.$black;
+        min-width: 54px;
+        min-height: 54px;
+        transition: opacity linear 0.375s, transform linear 0.375s;
+        transform: translateY(18px);
+        opacity: 0;
 
-        .action {
+        // Actions
+        .action-wrap {
+            width: 38px;
+            height: 38px;
+            border: 1px solid bs.$black;
             border-radius: bs.$border-radius-lg;
+            margin-left: map-get(bs.$spacers, 2);
+            z-index: 1;
 
-            // Bottom glow
+            .action {
+                border-radius: bs.$border-radius-lg;
+
+                var {
+                    bottom: 0;
+                    left: 0;
+                    color: bs.$light;
+                    font-size: 0.85rem;
+                    text-shadow: -1px -1px 0 bs.$black, 1px -1px 0 bs.$black, -1px 1px 0 bs.$black, 1px 1px 0 bs.$black;
+                    transform: translateY(50%);
+                    z-index: 2;
+                }
+
+                // Bottom glow
+                &:after {
+                    position: absolute;
+                    content: "\00a";
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    border-radius: 0.25em;
+                    box-shadow: inset 0 1px darken(#fff, 60%);
+                    transform: scaleY(-1);
+                }
+            }
+
+            // Remove margins from first item
+            &:first-of-type {
+                margin-left: map-get(bs.$spacers, 0);
+            }
+
+            // Top glow
             &:after {
-                position:absolute;
-                content:"\00a";
-                top:0;
-                left:0;
-                width:100%;
-                height:100%;
-                border-radius:.25em;
-                box-shadow:inset 0 1px darken(#fff, 60%);
-                transform:scaleY(-1);
+                position: absolute;
+                content: "\00a";
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border-radius: bs.$border-radius-lg;
+                box-shadow: inset 0 1px darken(#fff, 30%);
             }
         }
 
-        // Remove margins from first item
-        &:first-of-type {
-            margin-left:map-get(bs.$spacers, 0);
+        // Empty spellbook
+        // &:empty {
+        //     opacity:0;
+        // }
+
+        &.enter,
+        &.enter-done {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        // Top glow
+        // Chat bubble triangle
         &:after {
-            position:absolute;
-            content:"\00a";
-            top:0;
-            left:0;
-            width:100%;
-            height:100%;
-            border-radius: bs.$border-radius-lg;
-            box-shadow:inset 0 1px darken(#fff, 30%);
-          }
-    }
-
-    // Empty spellbook
-    &:empty {
-        opacity:0;
-    }
-
-    // Chat bubble triangle
-    &:after {
-        background-color: bs.$gray-500;
-        box-shadow: -2px 2px 2px 0 rgba( bs.$black, .4 );
-        content: "\00a";
-        position: absolute;
-        left: -8px;
-        top: calc(38px / 2);
-        height: calc(38px / 2);
-        width: calc(38px / 2);
-        transform: rotate( 45deg );
-        z-index:0;
+            background-color: bs.$gray-200;
+            box-shadow: 2px 2px 2px 0 rgba(bs.$black, 0.4);
+            content: "\00a";
+            position: absolute;
+            top: 45px;
+            left: 50%;
+            margin-left: calc(-38px / 4);
+            width: calc(38px / 2);
+            height: calc(38px / 2);
+            transform: rotate(45deg);
+            z-index: 0;
+        }
     }
 }

@@ -3,7 +3,7 @@ import Promise from 'bluebird'
 import axios from 'axios'
 
 // Import our components
-import * as Utils from 'toolkits/utils'
+// import * as Utils from 'toolkits/utils'
 
 const _xivapi = {
     url: 'https://xivapi.com',

@@ -82,6 +82,8 @@ function QuillInstances() {
 
     useEffect(() => {
         getInstances()
+        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (

@@ -15,11 +15,25 @@ import { useEffect } from 'react'
 // ...
 
 function WizardPage() {
-    const patch = '6.0'
+    const patch = '6.05'
 
     useEffect(() => {
         Storage.wipe(patch)
     }, [patch])
+
+    useEffect(() => {
+        document.addEventListener('onOverlayStateUpdate', (e) => {
+            // console.log(e)
+
+            if (e.detail.isLocked) {
+                document.body.classList.add('locked')
+                document.body.classList.remove('unlocked')
+            } else {
+                document.body.classList.add('unlocked')
+                document.body.classList.remove('locked')
+            }
+        })
+    }, [])
 
     return (
         <WebSocketProvider>

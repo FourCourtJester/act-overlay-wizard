@@ -30,8 +30,9 @@ export const updateAction = createAsyncThunk(`${name}/updateAction`, async (id, 
     // Update stored action
     if (update_required) Storage.set(`action.${id}`, action)
 
+    // TODO: Reject if action is null
     // Update state
-    return action
+    return action === null ? api.rejectWithValue(null) : action
 })
 
 // Jobs Slice

@@ -12,15 +12,16 @@ function WizardDynamis() {
         ws = useContext(WebSocketContext)
 
     function parseEffect(line) {
-        const [code, , , effect, duration, id, source, , target, ..._] = line
+        // const [code, ts, effect_id, effect, duration, source_id, source, target_id, target, ..._] = line
+        const [code, , , , , , , , , ..._] = line
 
         switch (+code) {
             case 26:
-                console.log(`${source} applied ${effect} to ${target} for ${duration}s`)
+                // console.log(`${source} applied ${effect} to ${target} for ${duration}s`)
                 break
 
             case 30:
-                console.log(`${target} has lost ${effect} from ${source}`)
+                // console.log(`${target} has lost ${effect} from ${source}`)
                 break
 
             default: break
@@ -40,9 +41,7 @@ function WizardDynamis() {
         })
     }, [ws])
 
-    return (
-        <p>Dynamis</p>
-    )
+    return (null)
 }
 
 export default WizardDynamis

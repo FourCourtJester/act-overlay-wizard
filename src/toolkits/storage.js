@@ -1,8 +1,8 @@
 // Import core components
-import Promise from 'bluebird'
+// import Promise from 'bluebird'
 
 // Import our components
-import * as Utils from 'toolkits/utils'
+// import * as Utils from 'toolkits/utils'
 
 const
     storage = localStorage,

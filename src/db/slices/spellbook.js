@@ -7,6 +7,7 @@ import * as Utils from 'toolkits/utils'
 
 const
     name = 'spellbook',
+    recast_cutoff = 2.5,
     initial_state = {
         resting: {},
         party: {},
@@ -23,15 +24,24 @@ export const spellbook = createSlice({
         initYou: (state, { payload: name }) => {
             state.obj.you = name
         },
+        removeResting: (state, _) => {
+            state.obj.resting = {}
+        },
+        updateParty: (state, action) => {
+            state.obj.party = action.payload
+        },
+        updateRecast: (state, { payload }) => {
+            payload.forEach((action) => {
+                if (action.recast < 0) delete state.obj.resting[action.id]
+                else state.obj.resting[action.id].recast = action.recast
+            })
+        },
         updateResting: (state, { payload: id }) => {
             id = Utils.h2d(id)
 
             const action = Storage.get(`action.${id}`)
 
-            state.obj.resting[action.id] = { ...action }
-        },
-        updateParty: (state, action) => {
-            state.obj.party = action.payload
+            if (action.recast > recast_cutoff) state.obj.resting[action.id] = { ...action }
         },
     }
 })
@@ -39,8 +49,10 @@ export const spellbook = createSlice({
 // Reducer functions
 export const {
     initYou,
-    updateResting,
+    removeResting,
     updateParty,
+    updateRecast,
+    updateResting
 } = spellbook.actions
 
 // Selector functions

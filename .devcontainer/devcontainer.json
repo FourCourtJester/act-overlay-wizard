@@ -9,17 +9,11 @@
 	// Set *default* container specific settings.json values on container create.
 	"settings": {},
 
-	// The optional 'workspaceFolder' property is the path VS Code should open by default when
-	// connected. This is typically a file mount in .devcontainer/docker-compose.yml
-	// "workspaceFolder": "/usr/src/app",
-
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
-		"dbaeumer.vscode-eslint"
+		"dbaeumer.vscode-eslint",			// ESLint
+		"sibiraj-s.vscode-scss-formatter"	// SCSS Formatter
 	],
-
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "npm ci -q",

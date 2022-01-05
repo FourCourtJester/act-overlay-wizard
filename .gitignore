@@ -5,9 +5,6 @@ coverage
 # Build
 **/build
 
-# Dev Projects
-**/projects
-
 # Logs
 logs
 *.log
@@ -25,9 +22,6 @@ lib-cov
 
 # node-waf configuration
 .lock-wscript
-
-# vscode settings
-# .vscode
 
 # Dependency directories (https://docs.npmjs.com/cli/shrinkwrap#caveats)
 bower_components
