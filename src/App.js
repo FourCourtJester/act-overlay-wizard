@@ -1,6 +1,6 @@
 // Import core components
 import { Suspense } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { HashRouter as Router, Routes, Route } from 'react-router-dom'
 import ErrorBoundary from 'ErrorBoundary'
 
 // Import our components
@@ -26,7 +26,7 @@ function App() {
 							<Route path="instances" element={<Instances />} />
 							<Route path="jobs" element={<Jobs />} />
 						</Route> */}
-						<Route path="/" element={<Wizard />} />
+						<Route exact path="/" element={<Wizard />} />
 						<Route path="*" element={<_404 />} />
 					</Routes>
 				</Router>
