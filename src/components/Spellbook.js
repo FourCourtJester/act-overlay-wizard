@@ -23,8 +23,8 @@ function WizardSpellbook() {
         // Variables
         recast_threshold = 3, // Number of seconds to pay attention to
         cache = {
-            actions: useSelector(selectActions),
-            party: useSelector(selectParty),
+            // actions: useSelector(selectActions),
+            // party: useSelector(selectParty),
             restricted: useSelector(selectRestricted),
             you: useSelector(selectYou),
         },
@@ -33,7 +33,8 @@ function WizardSpellbook() {
         [filtered_resting, setResting] = useState([]),
         [visible, setVisible] = useState(false),
         [action, setAction] = useState([]),
-        [reset, setReset] = useState([]),
+        [redress, setRedress] = useState([]),
+        [zone, setZone] = useState([]),
         // Ref
         $spellbook = useRef(null)
 
@@ -55,11 +56,16 @@ function WizardSpellbook() {
             }, {})))
         })
 
+        // Subscribe to ChangeZone
+        ws.on('ChangeZone', 'WizardSpellbook', ({ zoneID, zoneName }) => {
+            setZone(zoneID)
+        })
+
         // Subscribe to LogLine
         ws.on('LogLine', 'WizardSpellbook', ({ line, rawLine: raw }) => {
             switch (+line[0]) {
                 case 3:
-                    setReset(line)
+                    setRedress(line)
                     break
                 case 21:
                 case 22:
@@ -70,16 +76,15 @@ function WizardSpellbook() {
             }
         })
 
-        // Connect
-        ws.connect()
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ws])
 
+    // Report Primary Player change
     useEffect(() => {
         console.log('Change Primary Player:', cache.you)
     }, [cache.you])
 
+    // Parse the incoming Action
     useEffect(() => {
         if (!action.length) return false
 
@@ -98,11 +103,12 @@ function WizardSpellbook() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [action])
 
+    // Class change, reset timers
     useEffect(() => {
-        if (!reset.length) return false
+        if (!redress.length) return false
 
         // const [code, ts, source_id, source, job_id, level, ..._] = line
-        const [, , , source, , , ..._] = reset
+        const [, , , source, , , ..._] = redress
 
         // Only care if we changed classes
         if (source !== cache.you) return false
@@ -111,33 +117,41 @@ function WizardSpellbook() {
         dispatch(removeResting())
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [reset])
+    }, [redress])
 
+    // Zone change, reset timers
     useEffect(() => {
-        const actions = Object.values(resting).reduce(
-            (actions, action) => action.recast > recast_threshold
-                ? actions
-                : actions.concat([action])
-            , [])
+        // Remove all resting actions
+        dispatch(removeResting())
 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [zone])
+
+    // Filter resting Actions for eminent recasting
+    useEffect(() => {
+        const actions = Object
+            .values(resting)
+            .reduce(
+                (actions, action) => action.recast > recast_threshold
+                    ? actions
+                    : actions.concat([action])
+                , [])
+
+        // Sort by recast ascending
         setResting(actions.sort((a, b) => a.recast > b.recast ? 1 : a.recast < b.recast ? -1 : 0))
     }, [resting])
 
+    // Animate the chat bubble
     useEffect(() => {
         setVisible(filtered_resting.length > 0)
     }, [filtered_resting.length])
-
-    // Testing
-    // useEffect(() => {
-    //     parseAction(['21', '|', '|', 'Shekawa Phen', 'BC', 'Sacred Soil', '|', 'Shekawa Phen', '|'])
-    //     parseAction(['21', '|', '|', 'Shekawa Phen', 'B9', 'Adloquium', '|', 'Shekawa Phen', '|'])
-    // }, [])
 
     return (
         <div className="spellbook-wrap position-absolute d-flex flex-row justify-content-center align-items-center w-100">
             <CSSTransition ref={$spellbook} in={visible} timeout={375}>
                 {/* Spellbook */}
                 <div className="spellbook position-relative d-flex flex-row justify-content-center align-items-center p-2">
+                    {/* Actions */}
                     {filtered_resting.length > 0 && filtered_resting.map((action, i) => (
                         <span key={i} className="action-wrap position-relative d-flex">
                             <span className="action position-relative d-block w-100 h-100">

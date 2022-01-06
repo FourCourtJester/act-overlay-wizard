@@ -1,5 +1,5 @@
 // Import core components
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 // Import our components
@@ -14,7 +14,19 @@ function WizardSundial() {
         dispatch = useDispatch(),
         // Variables
         resting = useSelector(selectResting),
-        [time, setTime] = useState(Date.now())
+        [time, setTime] = useState(Date.now()),
+        interval = useRef(null)
+
+    useEffect(() => {
+        if (Object.values(resting).length) {
+            if (interval.current === null) {
+                interval.current = setInterval(() => setTime(Date.now()), 1005)
+            }
+        } else {
+            clearInterval(interval.current)
+            interval.current = null
+        }
+    }, [resting])
 
     useEffect(() => {
         const updated_actions = Object.values({ ...resting }).reduce((actions, action) => {
@@ -32,11 +44,9 @@ function WizardSundial() {
     }, [time])
 
     useEffect(() => {
-        let interval = setInterval(() => setTime(Date.now()), 1005)
-
         return () => {
-            clearInterval(interval)
-            interval = null
+            clearInterval(interval.current)
+            interval.current = null
         }
     }, [])
 
