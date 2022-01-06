@@ -42,7 +42,7 @@ async function _getAction(id) {
         // })
 }
 
-export const url = _xivapi.public
+export const url = window.location.protocol === 'https:' ? _xivapi.url : _xivapi.public
 
 export async function get(type, id) {
     switch (type) {
