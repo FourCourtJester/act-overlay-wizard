@@ -36,14 +36,15 @@ async function _getAction(id) {
                     }
                 })
         })
-        .catch((err) => {
-            console.log(err)
-        })
+        // .catch((err) => {
+            // console.error(err)
+            // return null
+        // })
 }
 
 export const url = _xivapi.public
 
-export function get(type, id) {
+export async function get(type, id) {
     switch (type) {
         case 'action':
             return Promise

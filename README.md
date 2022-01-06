@@ -19,6 +19,7 @@ It is recommended that you enable clickthrough when you're done setting the over
     - Additional actions to run
 
 - Spellbook
+    - Reset on a wipe
 
 - Dynamis
     - Copy the Spellbook flow
@@ -31,3 +32,6 @@ It is recommended that you enable clickthrough when you're done setting the over
 - Instances
     - Zone ID from `ChangeZone` relates to TerritoryID in XIVAPI
     - Banners only available for Instances
+
+- XIVAPI
+    - Images set to https://

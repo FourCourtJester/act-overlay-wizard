@@ -16,6 +16,8 @@ import Wizard from 'pages/Wizard'
 // ...
 
 function App() {
+	console.log('ACT Wizard: Ready')
+
 	return (
 		<ErrorBoundary>
 			<Suspense fallback={<p>Fallback</p>}>

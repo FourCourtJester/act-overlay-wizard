@@ -38,8 +38,8 @@ function WizardPage() {
     return (
         <WebSocketProvider>
             <Sundial />
-            <Spellbook />
             <Dynamis />
+            <Spellbook />
         </WebSocketProvider>
     )
 }

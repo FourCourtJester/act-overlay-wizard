@@ -221,9 +221,6 @@ function Provider(params) {
     useEffect(() => {
         const ws = _ws.current
 
-        // Open the connection
-        ws.connect()
-
         // ComponentWillUnmount equivalent
         return () => {
             // Close the connection
