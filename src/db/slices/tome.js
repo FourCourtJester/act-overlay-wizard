@@ -8,7 +8,7 @@ import * as XIVAPI from 'toolkits/xivapi'
 
 const
     name = 'tome',
-    recast_cutoff = 2.5,
+    recast_cutoff = 3,
     initial_state = {
         actions: {},
         instances: {},
