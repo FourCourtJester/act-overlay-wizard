@@ -18,27 +18,17 @@ const
 export const updateAction = createAsyncThunk(`${name}/updateAction`, async (id, api) => {
     id = Utils.h2d(id)
 
-    let action = Storage.get(`action.${id}`)
-
-    // No stored actions
-    if (action !== null) return action
+    let action = Storage.get(`action.${id}`) || await XIVAPI.get('action', id)
 
     try {
-        action = await XIVAPI.get('action', id)
-
-        // Action is below desired recast cutoff
-        if ((action?.recast || 0) <= recast_cutoff) return api.rejectWithValue(null)
-
         // New action
         Storage.set(`action.${id}`, action)
+
+        // Action is below desired recast cutoff
+        if ((action?.recast || 0) <= recast_cutoff) throw new Error(null)
+        
         return action
     } catch (err) {
-        // Not an action
-        Storage.set(`action.${id}`, {
-            id: id,
-            display_name: null,
-        })
-
         return api.rejectWithValue(null)
     }
 })
