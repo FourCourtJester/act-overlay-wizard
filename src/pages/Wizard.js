@@ -4,7 +4,9 @@ import { useDispatch, useSelector } from 'react-redux'
 
 // Import our components
 import { WebSocketProvider } from 'contexts/WebSocket'
-import { checkVersion, selectVersion } from 'db/slices/version'
+import { initVersion } from 'db/slices/version'
+import { initRestricted } from 'db/slices/spellbook'
+import { initRecast } from 'db/slices/tome'
 
 import Spellbook from 'components/Spellbook'
 import Sundial from 'components/Sundial'
@@ -16,8 +18,7 @@ import Dynamis from 'components/Dynamis'
 function WizardPage() {
     const
         // Redux
-        dispatch = useDispatch(),
-        version = useSelector(selectVersion)
+        dispatch = useDispatch()
 
     // Check for Lock status from OverlayPlugin.dll
     useEffect(() => {
@@ -36,7 +37,9 @@ function WizardPage() {
 
     // Check for version changes from FFXIV
     useEffect(() => {
-        dispatch(checkVersion(version))
+        dispatch(initVersion())
+        dispatch(initRestricted())
+        dispatch(initRecast())
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])

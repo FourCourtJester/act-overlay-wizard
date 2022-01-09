@@ -7,7 +7,7 @@ import { createSlice } from '@reduxjs/toolkit'
 const
     name = 'version',
     initial_state = {
-        id: '6.05',
+        id: '6.05.a',
     }
 
 // Jobs Slice
@@ -15,7 +15,7 @@ export const version = createSlice({
     name: name,
     initialState: initial_state,
     reducers: {
-        check: (state, action) => {
+        init: (state, action) => {
             // Update the actual version
             state.id = initial_state.id
         },
@@ -24,7 +24,7 @@ export const version = createSlice({
 
 // Reducer functions
 export const {
-    check: checkVersion
+    init: initVersion
 } = version.actions
 
 // Selector functions

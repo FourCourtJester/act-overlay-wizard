@@ -4,7 +4,7 @@ import axios from 'axios'
 
 // Import our components
 import * as Utils from 'toolkits/utils'
-import * as Storage from 'toolkits/storage'
+// import * as Storage from 'toolkits/storage'
 
 const _xivapi = {
     url: 'https://xivapi.com',

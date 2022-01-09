@@ -12,7 +12,7 @@ const
     name = 'spellbook',
     initial_state = {
         resting: {},
-        restricted: ['Mount', 'mount', 'item'],
+        restricted: ['attack', 'Mount', 'mount', 'item'],
         party: {},
         you: null,
     }
@@ -29,7 +29,10 @@ export const updateResting = createAsyncThunk(`${name}/updateResting`, async (id
             current_version = selectVersion(state)
 
         // Valid existing action
-        if (cached_action?.version === current_version) return cached_action
+        if (cached_action?.version === current_version) {
+            if ((cached_action?.recast || 0) <= recast_cutoff) throw new Error(null)
+            return cached_action
+        }
 
         const new_action = await XIVAPI.get('action', { id, version: current_version })
 
@@ -56,6 +59,9 @@ export const spellbook = createSlice({
         clearResting: (state, _) => {
             state.resting = {}
         },
+        initRestricted: (state, action) => {
+            state.restricted = initial_state.restricted
+        },
         initYou: (state, { payload: name }) => {
             state.you = name
         },
@@ -79,6 +85,7 @@ export const spellbook = createSlice({
 // Reducer functions
 export const {
     clearResting,
+    initRestricted,
     initYou,
     updateParty,
     updateRecast,

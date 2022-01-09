@@ -19,6 +19,9 @@ export const tome = createSlice({
     name: name,
     initialState: initial_state,
     reducers: {
+        initRecast: (state, action) => {
+            state.recast = initial_state.recast
+        },
         updateAction: (state, { payload: action }) => {
             state.actions[action.id] = action
         }
@@ -27,6 +30,7 @@ export const tome = createSlice({
 
 // Reducer functions
 export const {
+    initRecast,
     updateAction
 } = tome.actions
 
