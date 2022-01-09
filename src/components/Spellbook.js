@@ -69,8 +69,17 @@ function WizardSpellbook() {
                     break
                 case 21:
                 case 22:
-                    // parseAction(line)
                     setAction(line)
+                    break
+                default: break
+            }
+        })
+
+        // Subscribe to CombatData
+        ws.on('CombatData', 'WizardSpellbook', ({ isActive }) => {
+            switch (isActive) {
+                // Remove all resting actions
+                case "false": dispatch(clearResting())
                     break
                 default: break
             }

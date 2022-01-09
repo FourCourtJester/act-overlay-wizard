@@ -118,7 +118,7 @@ class WS {
                     events: [
                         // "onOverlayDataUpdate",
                         // "SendCharName",
-                        // "CombatData",
+                        "CombatData",
                         // "EnmityAggroList",
                         // "EnmityTargetData",
                         "ChangePrimaryPlayer",
