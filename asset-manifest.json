@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/ACT-Overlay-Wizard/static/css/main.563d1d17.css",
-    "main.js": "/ACT-Overlay-Wizard/static/js/main.79ffd7c2.js",
+    "main.js": "/ACT-Overlay-Wizard/static/js/main.20e23844.js",
     "index.html": "/ACT-Overlay-Wizard/index.html",
     "main.563d1d17.css.map": "/ACT-Overlay-Wizard/static/css/main.563d1d17.css.map",
-    "main.79ffd7c2.js.map": "/ACT-Overlay-Wizard/static/js/main.79ffd7c2.js.map"
+    "main.20e23844.js.map": "/ACT-Overlay-Wizard/static/js/main.20e23844.js.map"
   },
   "entrypoints": [
     "static/css/main.563d1d17.css",
-    "static/js/main.79ffd7c2.js"
+    "static/js/main.20e23844.js"
   ]
 }
