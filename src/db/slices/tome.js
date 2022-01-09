@@ -1,10 +1,8 @@
 // Import core components
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 
 // Import our components
-import * as Storage from 'toolkits/storage'
-import * as Utils from 'toolkits/utils'
-import * as XIVAPI from 'toolkits/xivapi'
+// import * as Utils from 'toolkits/utils'
 
 const
     name = 'tome',
@@ -13,45 +11,30 @@ const
         actions: {},
         instances: {},
         jobs: {},
+        recast: recast_cutoff
     }
 
-export const updateAction = createAsyncThunk(`${name}/updateAction`, async (id, api) => {
-    id = Utils.h2d(id)
-
-    let action = Storage.get(`action.${id}`) || await XIVAPI.get('action', id)
-
-    try {
-        // New action
-        Storage.set(`action.${id}`, action)
-
-        // Action is below desired recast cutoff
-        if ((action?.recast || 0) <= recast_cutoff) throw new Error(null)
-        
-        return action
-    } catch (err) {
-        return api.rejectWithValue(null)
-    }
-})
-
-// Jobs Slice
+// Tomes Slice
 export const tome = createSlice({
     name: name,
-    initialState: {
-        obj: initial_state,
-    },
-    extraReducers: {
-        [updateAction.fulfilled]: (state, { payload: action }) => {
-            state.obj.actions[action.id] = action
-        },
-    },
+    initialState: initial_state,
+    reducers: {
+        updateAction: (state, { payload: action }) => {
+            state.actions[action.id] = action
+        }
+    }
 })
 
 // Reducer functions
-// export const {} = tome.actions
+export const {
+    updateAction
+} = tome.actions
 
 // Selector functions
-export const selectActions = (state) => state.tome.obj.actions
-export const selectInstances = (state) => state.tome.obj.instances
-export const selectJobs = (state) => state.tome.obj.jobs
+export const selectAction = (state, id) => state[name].actions?.[id]
+export const selectActions = (state) => state[name].actions
+export const selectInstances = (state) => state[name].instances
+export const selectJobs = (state) => state[name].jobs
+export const selectRecast = (state) => state[name].recast
 
 export default tome.reducer

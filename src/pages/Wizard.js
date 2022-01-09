@@ -1,26 +1,25 @@
 // Import core components
-// ...
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 // Import our components
 import { WebSocketProvider } from 'contexts/WebSocket'
+import { checkVersion, selectVersion } from 'db/slices/version'
 
 import Spellbook from 'components/Spellbook'
 import Sundial from 'components/Sundial'
 import Dynamis from 'components/Dynamis'
 
-import * as Storage from 'toolkits/storage'
-import { useEffect } from 'react'
-
 // Import style
 // ...
 
 function WizardPage() {
-    const patch = '6.05'
+    const
+        // Redux
+        dispatch = useDispatch(),
+        version = useSelector(selectVersion)
 
-    useEffect(() => {
-        Storage.wipe(patch)
-    }, [patch])
-
+    // Check for Lock status from OverlayPlugin.dll
     useEffect(() => {
         document.addEventListener('onOverlayStateUpdate', (e) => {
             // console.log(e)
@@ -33,6 +32,13 @@ function WizardPage() {
                 document.body.classList.remove('locked')
             }
         })
+    }, [])
+
+    // Check for version changes from FFXIV
+    useEffect(() => {
+        dispatch(checkVersion(version))
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (

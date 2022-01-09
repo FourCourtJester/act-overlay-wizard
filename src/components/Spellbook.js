@@ -5,8 +5,8 @@ import { CSSTransition } from 'react-transition-group'
 
 // Import our components
 import { WebSocketContext } from 'contexts/WebSocket'
-import { initYou, removeResting, selectResting, selectRestricted, selectParty, selectYou, updateParty } from 'db/slices/spellbook'
-import { selectActions, updateAction } from 'db/slices/tome'
+import { initYou, clearResting, selectResting, selectRestricted, selectParty, selectYou, updateParty, updateResting } from 'db/slices/spellbook'
+import { selectActions } from 'db/slices/tome'
 
 import { url as xivapi_url } from 'toolkits/xivapi'
 // import * as Utils from 'toolkits/utils'
@@ -23,7 +23,7 @@ function WizardSpellbook() {
         // Variables
         recast_threshold = 3, // Number of seconds to pay attention to
         cache = {
-            // actions: useSelector(selectActions),
+            actions: useSelector(selectActions),
             // party: useSelector(selectParty),
             restricted: useSelector(selectRestricted),
             you: useSelector(selectYou),
@@ -97,8 +97,8 @@ function WizardSpellbook() {
         // Ignore a safelist of abilities
         if (cache.restricted.includes(name.split('_')[0])) return false
 
-        // If this action hasn't been seen before, update our references
-        dispatch(updateAction(id))
+        // Update our resting actions
+        dispatch(updateResting(id))
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [action])
@@ -114,7 +114,7 @@ function WizardSpellbook() {
         if (source !== cache.you) return false
 
         // Remove all resting actions
-        dispatch(removeResting())
+        dispatch(clearResting())
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [redress])
@@ -122,7 +122,7 @@ function WizardSpellbook() {
     // Zone change, reset timers
     useEffect(() => {
         // Remove all resting actions
-        dispatch(removeResting())
+        dispatch(clearResting())
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [zone])

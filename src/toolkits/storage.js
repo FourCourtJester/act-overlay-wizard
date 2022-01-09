@@ -22,6 +22,7 @@ export function get(name) {
         return JSON.parse(storage.getItem(_namespace([name])))
     } catch (err) {
         console.error(err)
+        return null
     }
 }
 
@@ -44,7 +45,7 @@ export function wipe(version) {
     // If we have a new version, wipe all existing storage
     if (cached_version !== version) {
         Object.keys(storage).forEach((key) => {
-            if (key.startsWith(namespace)) storage.removeItem(key)
+            if (key.startsWith(_namespace('action'))) storage.removeItem(key)
         })
     }
 

@@ -3,7 +3,8 @@ import Promise from 'bluebird'
 import axios from 'axios'
 
 // Import our components
-// import * as Utils from 'toolkits/utils'
+import * as Utils from 'toolkits/utils'
+import * as Storage from 'toolkits/storage'
 
 const _xivapi = {
     url: 'https://xivapi.com',
@@ -18,38 +19,39 @@ function _url(str) {
     return [_xivapi.url, ...str].join('/') + `?api_key=${_xivapi.key}`
 }
 
-async function _getAction(id) {
+async function _getAction(id, version) {
     return axios
-        .get(_url(['Action', id]))
+        .get(_url(['Action', Utils.h2d(id)]))
         .then((response) => {
             return Promise
                 .resolve(true)
                 .delay(250)
                 .then(() => {
                     return {
-                        id: response.data.ID,
+                        id: Utils.d2h(response.data.ID),
                         icon: response.data.IconHD,
                         display_name: response.data.Name_en,
                         jobs: response.data.ClassJobCategory.Name_en.split(' '),
-                        recast: response.data.Recast100ms / 10,
-                        duration: response.data.Description_en ? +(response.data.Description_en.match(/Duration:<\/span>\s(\d+)s/)?.[1]) : 0
+                        recast: response.data?.Recast100ms ? response.data.Recast100ms / 10 : 0,
+                        duration: response.data?.Description_en ? +(response.data.Description_en.match(/Duration:<\/span>\s(\d+)s/)?.[1]) || 0 : 0,
+                        version: version
                     }
                 })
         })
-        // .catch((err) => {
-            // console.error(err)
-            // return null
-        // })
+        .catch((err) => {
+            console.error(err)
+            return null
+        })
 }
 
 export const url = window.location.protocol === 'https:' ? _xivapi.url : _xivapi.public
 
-export async function get(type, id) {
+export async function get(type, { id, version }) {
     switch (type) {
         case 'action':
             return Promise
                 .resolve(true)
-                .then(() => _getAction(id))
+                .then(() => _getAction(id, version))
         default: return null
     }
 }

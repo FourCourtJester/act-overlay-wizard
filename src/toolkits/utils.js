@@ -4,7 +4,7 @@
  * @returns 
  */
  export function d2h(num) {
-    return +(num.toString(16))
+    return num.toString(16).toUpperCase()
 }
 
 /**
