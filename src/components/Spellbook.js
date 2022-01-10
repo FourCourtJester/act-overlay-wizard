@@ -5,7 +5,7 @@ import { CSSTransition } from 'react-transition-group'
 
 // Import our components
 import { WebSocketContext } from 'contexts/WebSocket'
-import { initYou, clearResting, selectResting, selectRestricted, selectParty, selectYou, updateParty, updateResting } from 'db/slices/spellbook'
+import { initYou, clearResting, selectResting, selectRestricted, selectYou, updateResting } from 'db/slices/spellbook'
 import { selectActions } from 'db/slices/tome'
 
 import { url as xivapi_url } from 'toolkits/xivapi'
@@ -24,7 +24,6 @@ function WizardSpellbook() {
         recast_threshold = 3, // Number of seconds to pay attention to
         cache = {
             actions: useSelector(selectActions),
-            // party: useSelector(selectParty),
             restricted: useSelector(selectRestricted),
             you: useSelector(selectYou),
         },
@@ -45,16 +44,16 @@ function WizardSpellbook() {
         })
 
         // Subscribe to PartyChanged
-        ws.on('PartyChanged', 'WizardSpellbook', ({ party }) => {
-            dispatch(updateParty(party.reduce((list, member) => {
-                list[member.name] = {
-                    id: member.id,
-                    job: member.job
-                }
+        // ws.on('PartyChanged', 'WizardSpellbook', ({ party }) => {
+        //     dispatch(updateParty(party.reduce((list, member) => {
+        //         list[member.name] = {
+        //             id: member.id,
+        //             job: member.job
+        //         }
 
-                return list
-            }, {})))
-        })
+        //         return list
+        //     }, {})))
+        // })
 
         // Subscribe to ChangeZone
         ws.on('ChangeZone', 'WizardSpellbook', ({ zoneID, zoneName }) => {

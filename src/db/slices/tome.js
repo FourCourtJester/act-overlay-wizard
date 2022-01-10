@@ -11,7 +11,8 @@ const
         actions: {},
         instances: {},
         jobs: {},
-        recast: recast_cutoff
+        recast: recast_cutoff,
+        statuses: {},
     }
 
 // Tomes Slice
@@ -24,6 +25,9 @@ export const tome = createSlice({
         },
         updateAction: (state, { payload: action }) => {
             state.actions[action.id] = action
+        },
+        updateStatus: (state, { payload: action}) => {
+            state.statuses[action.id] = action
         }
     }
 })
@@ -31,7 +35,8 @@ export const tome = createSlice({
 // Reducer functions
 export const {
     initRecast,
-    updateAction
+    updateAction,
+    updateStatus
 } = tome.actions
 
 // Selector functions
@@ -39,6 +44,7 @@ export const selectAction = (state, id) => state[name].actions?.[id]
 export const selectActions = (state) => state[name].actions
 export const selectInstances = (state) => state[name].instances
 export const selectJobs = (state) => state[name].jobs
+export const selectStatus = (state, id) => state[name].statuses?.[id]
 export const selectRecast = (state) => state[name].recast
 
 export default tome.reducer

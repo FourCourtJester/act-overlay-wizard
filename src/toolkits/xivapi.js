@@ -19,7 +19,7 @@ function _url(str) {
     return [_xivapi.url, ...str].join('/') + `?api_key=${_xivapi.key}`
 }
 
-async function _getAction(id, version) {
+async function _getAction(id) {
     return axios
         .get(_url(['Action', Utils.h2d(id)]))
         .then((response) => {
@@ -28,13 +28,36 @@ async function _getAction(id, version) {
                 .delay(250)
                 .then(() => {
                     return {
-                        id: Utils.d2h(response.data.ID),
-                        icon: response.data.IconHD,
                         display_name: response.data.Name_en,
+                        duration: response.data?.Description_en ? +(response.data.Description_en.match(/Duration:<\/span>\s(\d+)s/)?.[1]) || 0 : 0,
+                        icon: response.data.IconHD,
+                        id: Utils.d2h(response.data.ID),
                         jobs: response.data.ClassJobCategory.Name_en.split(' '),
                         recast: response.data?.Recast100ms ? response.data.Recast100ms / 10 : 0,
-                        duration: response.data?.Description_en ? +(response.data.Description_en.match(/Duration:<\/span>\s(\d+)s/)?.[1]) || 0 : 0,
-                        version: version
+                        uses_charges: response.data.MaxCharges > 0,
+                    }
+                })
+        })
+        .catch((err) => {
+            console.error(err)
+            return null
+        })
+}
+
+async function _getStatus(id) {
+    return axios
+        .get(_url(['Status', Utils.h2d(id)]))
+        .then((response) => {
+            return Promise
+                .resolve(true)
+                .delay(250)
+                .then(() => {
+                    return {
+                        display_name: response.data.Name_en,
+                        has_duration: response.data.IsPermanent !== 1,
+                        icon: response.data.IconHD,
+                        id: Utils.d2h(response.data.ID),
+                        is_FC: response.data.IsFcBuff === 1,
                     }
                 })
         })
@@ -46,12 +69,14 @@ async function _getAction(id, version) {
 
 export const url = window.location.protocol === 'https:' ? _xivapi.url : _xivapi.public
 
-export async function get(type, { id, version }) {
-    switch (type) {
-        case 'action':
-            return Promise
-                .resolve(true)
-                .then(() => _getAction(id, version))
-        default: return null
-    }
+export async function get(type, id) {
+    return Promise
+        .resolve(true)
+        .then(() => {
+            switch (type) {
+                case 'action': return _getAction(id)
+                case 'status': return _getStatus(id)
+                default: return null
+            }
+        })
 }

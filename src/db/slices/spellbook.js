@@ -13,7 +13,6 @@ const
     initial_state = {
         resting: {},
         restricted: ['attack', 'Mount', 'mount', 'item'],
-        party: {},
         you: null,
     }
 
@@ -21,23 +20,26 @@ const
 export const updateResting = createAsyncThunk(`${name}/updateResting`, async (id, api) => {
     const
         state = api.getState(),
-        recast_cutoff = selectRecast(state)
+        recast_cutoff = selectRecast(state),
+        cached_action = selectAction(state, id),
+        current_version = selectVersion(state)
 
     try {
-        const
-            cached_action = selectAction(state, id),
-            current_version = selectVersion(state)
-
         // Valid existing action
         if (cached_action?.version === current_version) {
             if ((cached_action?.recast || 0) <= recast_cutoff) throw new Error(null)
             return cached_action
         }
 
-        const new_action = await XIVAPI.get('action', { id, version: current_version })
+        let new_action = await XIVAPI.get('action', id)
 
         // Action ID isn't a registered player action
         if (new_action === null) throw new Error(null)
+
+        new_action = {
+            ...new_action,
+            version: current_version,
+        }
 
         // New action
         api.dispatch(updateAction(new_action))
@@ -56,7 +58,7 @@ export const spellbook = createSlice({
     name: name,
     initialState: initial_state,
     reducers: {
-        clearResting: (state, _) => {
+        clear: (state, _) => {
             state.resting = {}
         },
         initRestricted: (state, action) => {
@@ -65,10 +67,7 @@ export const spellbook = createSlice({
         initYou: (state, { payload: name }) => {
             state.you = name
         },
-        updateParty: (state, action) => {
-            state.party = action.payload
-        },
-        updateRecast: (state, { payload }) => {
+        update: (state, { payload }) => {
             payload.forEach((action) => {
                 if (action.recast < 0) delete state.resting[action.id]
                 else state.resting[action.id].recast = action.recast
@@ -84,17 +83,15 @@ export const spellbook = createSlice({
 
 // Reducer functions
 export const {
-    clearResting,
+    clear: clearResting,
     initRestricted,
     initYou,
-    updateParty,
-    updateRecast,
+    update: updateRecast,
 } = spellbook.actions
 
 // Selector functions
 export const selectResting = (state) => state[name].resting
 export const selectRestricted = (state) => state[name].restricted
-export const selectParty = (state) => state[name].party
 export const selectYou = (state) => state[name].you
 
 export default spellbook.reducer

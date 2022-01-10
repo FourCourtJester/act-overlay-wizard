@@ -4,7 +4,7 @@ import { HashRouter as Router, Routes, Route } from 'react-router-dom'
 import ErrorBoundary from 'ErrorBoundary'
 
 // Import our components
-import _404 from 'pages/404'
+import E404 from 'pages/404'
 import Wizard from 'pages/Wizard'
 // import Quill from 'pages/Quill'
 
@@ -29,7 +29,7 @@ function App() {
 							<Route path="jobs" element={<Jobs />} />
 						</Route> */}
 						<Route exact path="/" element={<Wizard />} />
-						<Route path="*" element={<_404 />} />
+						<Route path="*" element={<E404 />} />
 					</Routes>
 				</Router>
 			</Suspense>

@@ -16,16 +16,14 @@ It is recommended that you enable clickthrough when you're done setting the over
 
 # Developer TODO
 - Sundial
-    - Additional actions to run
 
 - Spellbook
-    - Reset on a wipe
+    - Deal with charges. Somehow.
 
-- Dynamis
-    - Copy the Spellbook flow
-    - Add to Sundial
+- Status
+    - Create filter list of wanted status notifications
 
-- Status/Debuff
+- Debuff
     - Copy the Spellbook flow
     - Add to Sundial
 
@@ -33,5 +31,5 @@ It is recommended that you enable clickthrough when you're done setting the over
     - Zone ID from `ChangeZone` relates to TerritoryID in XIVAPI
     - Banners only available for Instances
 
-- XIVAPI
-    - Images set to https://
+- Redux Store
+    - New initialized state to accomodate changes

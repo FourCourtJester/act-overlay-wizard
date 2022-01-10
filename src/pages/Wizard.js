@@ -7,6 +7,7 @@ import { WebSocketProvider } from 'contexts/WebSocket'
 import { initVersion } from 'db/slices/version'
 import { initRestricted } from 'db/slices/spellbook'
 import { initRecast } from 'db/slices/tome'
+import { initInclusive } from 'db/slices/dynamis'
 
 import Spellbook from 'components/Spellbook'
 import Sundial from 'components/Sundial'
@@ -40,6 +41,7 @@ function WizardPage() {
         dispatch(initVersion())
         dispatch(initRestricted())
         dispatch(initRecast())
+        dispatch(initInclusive())
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
