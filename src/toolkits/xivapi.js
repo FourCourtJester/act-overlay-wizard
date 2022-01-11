@@ -35,7 +35,7 @@ async function _getAction(id) {
                     return {
                         display_name: response.data.Name_en,
                         duration: response.data?.Description_en ? +(response.data.Description_en.match(/Duration:<\/span>\s(\d+)s/)?.[1]) || 0 : 0,
-                        icon: response.data.IconHD,
+                        icon: [url, response.data.IconHD].join(''),
                         id: Utils.d2h(response.data.ID),
                         jobs: response.data.ClassJobCategory.Name_en.split(' '),
                         recast: response.data?.Recast100ms ? response.data.Recast100ms / 10 : 0,

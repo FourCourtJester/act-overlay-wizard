@@ -100,7 +100,7 @@ function WizardSpellbook() {
         if (source !== cache.you) return false
 
         // Ignore a safelist of abilities
-        if (cache.restricted.includes(name.split('_')[0])) return false
+        if (cache.restricted.includes(name.toLowerCase().split('_')[0])) return false
 
         // Update our resting actions
         dispatch(updateResting(id))

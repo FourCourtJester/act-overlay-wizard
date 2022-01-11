@@ -13,7 +13,7 @@ const
     name = 'spellbook',
     initial_state = {
         resting: {},
-        restricted: ['attack', 'Mount', 'mount', 'item'],
+        restricted: ['attack', 'mount', 'item'],
         you: null,
     }
 
