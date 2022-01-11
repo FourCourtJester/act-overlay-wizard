@@ -16,6 +16,7 @@ function WizardSundial() {
         // Variables
         resting_actions = useSelector(selectResting),
         active_statuses = useSelector(selectActive),
+        t = 1001,
         // States
         [time, setTime] = useState(Date.now()),
         // Refs
@@ -23,11 +24,11 @@ function WizardSundial() {
 
     useEffect(() => {
         const entries = Object.values(resting_actions).length + Object.values(active_statuses).length
-        
+
         if (entries > 0) {
             if (interval.current === null) {
                 console.log('Start Sundial')
-                interval.current = setInterval(() => setTime(Date.now()), 1005)
+                interval.current = setInterval(() => setTime(Date.now()), t)
             }
         } else {
             console.log('End Sundial')
@@ -39,10 +40,12 @@ function WizardSundial() {
     // Update resting actions
     useEffect(() => {
         const updated_actions = Object.values({ ...resting_actions }).reduce((actions, action) => {
-            actions.push({
-                id: action.id,
-                recast: action.recast - 1
-            })
+            const
+                _action = { id: action.id },
+                recast = action.recast.slice(0, 1) - 1
+
+            // Update the resting action timer
+            actions.push({ ..._action, recast: [recast].concat(action.recast.slice(1)) })
 
             return actions
         }, [])

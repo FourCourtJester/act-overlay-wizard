@@ -38,6 +38,7 @@ export const updateResting = createAsyncThunk(`${name}/updateResting`, async (id
 
         new_action = {
             ...new_action,
+            recast: [new_action.recast],
             version: current_version,
         }
 
@@ -45,7 +46,7 @@ export const updateResting = createAsyncThunk(`${name}/updateResting`, async (id
         api.dispatch(updateAction(new_action))
 
         // Action is below desired recast cutoff
-        if ((new_action?.recast || 0) <= recast_cutoff) throw new Error(null)
+        if ((new_action?.recast[0] || 0) <= recast_cutoff) throw new Error(null)
 
         return new_action
     } catch (err) {
@@ -69,14 +70,28 @@ export const spellbook = createSlice({
         },
         update: (state, { payload }) => {
             payload.forEach((action) => {
-                if (action.recast < 0) delete state.resting[action.id]
-                else state.resting[action.id].recast = action.recast
+                if (action.recast[0] < 0) action.recast.shift()
+
+                // Remove the resting action
+                if (!action.recast.length) {
+                    delete state.resting[action.id]
+                    return
+                }
+
+                state.resting[action.id].recast = action.recast
             })
         },
     },
     extraReducers: {
         [updateResting.fulfilled]: (state, { payload: action }) => {
-            state.resting[action.id] = { ...action }
+            if (state.resting?.[action.id]) {
+                state.resting[action.id] = {
+                    ...state.resting[action.id],
+                    recast: state.resting[action.id].recast.slice().concat(action.recast.slice())
+                }
+            } else {
+                state.resting[action.id] = { ...action }
+            }
         },
     },
 })

@@ -140,13 +140,13 @@ function WizardSpellbook() {
         const actions = Object
             .values(resting)
             .reduce(
-                (actions, action) => action.recast > recast_threshold
+                (actions, action) => action.recast[0] > recast_threshold
                     ? actions
                     : actions.concat([action])
                 , [])
 
         // Sort by recast ascending
-        setResting(actions.sort((a, b) => a.recast > b.recast ? 1 : a.recast < b.recast ? -1 : 0))
+        setResting(actions.sort((a, b) => a.recast[0] > b.recast[0] ? 1 : a.recast[0] < b.recast[0] ? -1 : 0))
     }, [resting])
 
     // Animate the chat bubble
@@ -164,7 +164,7 @@ function WizardSpellbook() {
                         <span key={i} className="action-wrap position-relative d-flex">
                             <span className="action position-relative d-block w-100 h-100">
                                 <img className="position-relative w-100 h-100" src={`${xivapi_url}${action.icon}`} alt={action.display_name} />
-                                <var className="position-absolute text-center w-100">{action.recast}</var>
+                                <var className="position-absolute text-center w-100">{action.recast[0]}</var>
                             </span>
                         </span>
                     ))}
