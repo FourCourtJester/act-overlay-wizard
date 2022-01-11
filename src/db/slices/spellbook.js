@@ -5,7 +5,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { selectAction, selectRecast, updateAction } from 'db/slices/tome'
 import { selectVersion } from 'db/slices/version'
 
-// import * as Utils from 'toolkits/utils'
+import * as Storage from 'toolkits/storage'
+import * as Utils from 'toolkits/utils'
 import * as XIVAPI from 'toolkits/xivapi'
 
 const
@@ -15,6 +16,20 @@ const
         restricted: ['attack', 'Mount', 'mount', 'item'],
         you: null,
     }
+
+function getState() {
+    try {
+        const persistent_state = Utils.getObjValue(Storage.get(`redux`), name) || initial_state
+
+        // Ensure certain fields exist
+        Utils.setObjValue(persistent_state, 'restricted', initial_state.restricted)
+
+        return persistent_state
+    } catch (err) {
+        console.error(err)
+        return initial_state
+    }
+}
 
 // Redux Thunk: updateResting
 export const updateResting = createAsyncThunk(`${name}/updateResting`, async (id, api) => {
@@ -57,13 +72,10 @@ export const updateResting = createAsyncThunk(`${name}/updateResting`, async (id
 // Spellbook Slice
 export const spellbook = createSlice({
     name: name,
-    initialState: initial_state,
+    initialState: getState(),
     reducers: {
         clear: (state, _) => {
             state.resting = {}
-        },
-        initRestricted: (state, action) => {
-            state.restricted = initial_state.restricted
         },
         initYou: (state, { payload: name }) => {
             state.you = name
@@ -99,7 +111,6 @@ export const spellbook = createSlice({
 // Reducer functions
 export const {
     clear: clearResting,
-    initRestricted,
     initYou,
     update: updateRecast,
 } = spellbook.actions

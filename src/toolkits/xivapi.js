@@ -4,15 +4,20 @@ import axios from 'axios'
 
 // Import our components
 import * as Utils from 'toolkits/utils'
-// import * as Storage from 'toolkits/storage'
 
 const _xivapi = {
-    url: 'https://xivapi.com',
-    public: 'http://xivapi.com',
     key: '3be1bf2c362b431a9a988372201d5c73271e2ee044a84611b2e3974f102dea7b',
+    public: 'http://xivapi.com',
+    overrides: {
+        // Sprint
+        '03': {
+            icon: 'https://ffxiv.gamerescape.com/w/images/a/a8/Sprint_Icon.png' // Can't find it on XIVApi at all
+        },
+    },
     type: {
         action: 'Action',
     },
+    url: 'https://xivapi.com',
 }
 
 function _url(str) {
@@ -35,6 +40,7 @@ async function _getAction(id) {
                         jobs: response.data.ClassJobCategory.Name_en.split(' '),
                         recast: response.data?.Recast100ms ? response.data.Recast100ms / 10 : 0,
                         uses_charges: response.data.MaxCharges > 0,
+                        ...(Utils.getObjValue(_xivapi.overrides, id) || {})
                     }
                 })
         })
@@ -55,7 +61,7 @@ async function _getStatus(id) {
                     return {
                         display_name: response.data.Name_en,
                         has_duration: response.data.IsPermanent !== 1,
-                        icon: response.data.IconHD,
+                        icon: `${url}${response.data.IconHD}`,
                         id: Utils.d2h(response.data.ID),
                         is_FC: response.data.IsFcBuff === 1,
                     }

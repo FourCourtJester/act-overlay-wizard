@@ -8,9 +8,6 @@ import { WebSocketContext } from 'contexts/WebSocket'
 import { initYou, clearResting, selectResting, selectRestricted, selectYou, updateResting } from 'db/slices/spellbook'
 import { selectActions } from 'db/slices/tome'
 
-import { url as xivapi_url } from 'toolkits/xivapi'
-// import * as Utils from 'toolkits/utils'
-
 // Import style
 // ...
 
@@ -163,7 +160,7 @@ function WizardSpellbook() {
                     {filtered_resting.length > 0 && filtered_resting.map((action, i) => (
                         <span key={i} className="action-wrap position-relative d-flex">
                             <span className="action position-relative d-block w-100 h-100">
-                                <img className="position-relative w-100 h-100" src={`${xivapi_url}${action.icon}`} alt={action.display_name} />
+                                <img className="position-relative w-100 h-100" src={action.icon} alt={action.display_name} />
                                 <var className="position-absolute text-center w-100">{action.recast[0]}</var>
                             </span>
                         </span>

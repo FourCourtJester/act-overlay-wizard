@@ -27,11 +27,11 @@ function WizardSundial() {
 
         if (entries > 0) {
             if (interval.current === null) {
-                console.log('Start Sundial')
+                // console.log('Start Sundial')
                 interval.current = setInterval(() => setTime(Date.now()), t)
             }
         } else {
-            console.log('End Sundial')
+            // console.log('End Sundial')
             clearInterval(interval.current)
             interval.current = null
         }

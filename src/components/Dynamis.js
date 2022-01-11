@@ -8,8 +8,6 @@ import { WebSocketContext } from 'contexts/WebSocket'
 import { addStatus, removeStatus, selectInclusive } from 'db/slices/dynamis'
 import { selectYou } from 'db/slices/spellbook'
 
-import { url as xivapi_url } from 'toolkits/xivapi'
-
 // Import style
 // ...
 
@@ -51,12 +49,12 @@ function WizardDynamis() {
         switch (+code) {
             case 26:
                 // console.log(`${source} applied ${effect} to ${target} for ${duration}s`)
-                dispatch(addStatus({ id, duration }))
+                // dispatch(addStatus({ id, duration }))
                 break
 
             case 30:
                 // console.log(`${target} has lost ${effect} from ${source}`)
-                dispatch(removeStatus(id))
+                // dispatch(removeStatus(id))
                 break
 
             default: break

@@ -18,7 +18,6 @@ It is recommended that you enable clickthrough when you're done setting the over
 - Sundial
 
 - Spellbook
-    - Deal with charges. Somehow.
 
 - Status
     - Create filter list of wanted status notifications
@@ -32,4 +31,3 @@ It is recommended that you enable clickthrough when you're done setting the over
     - Banners only available for Instances
 
 - Redux Store
-    - New initialized state to accomodate changes

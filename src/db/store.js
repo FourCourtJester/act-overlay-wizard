@@ -13,7 +13,7 @@ import * as Storage from 'toolkits/storage'
 const
   initial_state = {},
   store = configureStore({
-    preloadedState: Storage.get('redux') ? Storage.get('redux') : initial_state,
+    preloadedState: initial_state,
     reducer: {
       // quill: quillReducer,
       dynamis: dynamisReducer,

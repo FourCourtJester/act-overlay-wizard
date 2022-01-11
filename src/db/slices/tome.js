@@ -2,7 +2,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 // Import our components
-// import * as Utils from 'toolkits/utils'
+import * as Storage from 'toolkits/storage'
+import * as Utils from 'toolkits/utils'
 
 const
     name = 'tome',
@@ -15,18 +16,29 @@ const
         statuses: {},
     }
 
+function getState() {
+    try {
+        const persistent_state = Utils.getObjValue(Storage.get(`redux`), name) || initial_state
+
+        // Ensure certain fields exist
+        Utils.setObjValue(persistent_state, 'recast', initial_state.recast)
+
+        return persistent_state
+    } catch (err) {
+        console.error(err)
+        return initial_state
+    }
+}
+
 // Tomes Slice
 export const tome = createSlice({
     name: name,
-    initialState: initial_state,
+    initialState: getState(),
     reducers: {
-        initRecast: (state, action) => {
-            state.recast = initial_state.recast
-        },
         updateAction: (state, { payload: action }) => {
             state.actions[action.id] = action
         },
-        updateStatus: (state, { payload: action}) => {
+        updateStatus: (state, { payload: action }) => {
             state.statuses[action.id] = action
         }
     }
@@ -34,7 +46,6 @@ export const tome = createSlice({
 
 // Reducer functions
 export const {
-    initRecast,
     updateAction,
     updateStatus
 } = tome.actions

@@ -5,6 +5,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { selectStatus, updateStatus } from 'db/slices/tome'
 import { selectVersion } from 'db/slices/version'
 
+import * as Storage from 'toolkits/storage'
 import * as Utils from 'toolkits/utils'
 import * as XIVAPI from 'toolkits/xivapi'
 
@@ -12,10 +13,22 @@ const
     name = 'dynamis',
     initial_state = {
         active: {},
-        inclusive: [
-            Utils.d2h(2282), // Embolden
-        ],
+        inclusive: [],
     }
+
+function getState() {
+    try {
+        const persistent_state = Utils.getObjValue(Storage.get(`redux`), name) || initial_state
+
+        // Ensure certain fields exist
+        Utils.setObjValue(persistent_state, 'inclusive', initial_state.inclusive)
+
+        return persistent_state
+    } catch (err) {
+        console.error(err)
+        return initial_state
+    }
+}
 
 // Redux Thunk: addStatus
 export const addStatus = createAsyncThunk(`${name}/addStatus`, async ({ id, duration }, api) => {
@@ -57,11 +70,8 @@ export const addStatus = createAsyncThunk(`${name}/addStatus`, async ({ id, dura
 // Dynamis Slice
 export const dynamis = createSlice({
     name: name,
-    initialState: initial_state,
+    initialState: getState(),
     reducers: {
-        init: (state, status) => {
-            state.inclusive = initial_state.inclusive
-        },
         remove: (state, { payload: id }) => {
             delete state.active[id]
         },
@@ -81,7 +91,6 @@ export const dynamis = createSlice({
 
 // Reducer functions
 export const {
-    init: initInclusive,
     remove: removeStatus,
     update: updateDuration,
 } = dynamis.actions
