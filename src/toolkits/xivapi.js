@@ -10,7 +10,7 @@ const _xivapi = {
     public: 'http://xivapi.com',
     overrides: {
         // Sprint
-        '03': {
+        3: {
             icon: 'https://ffxiv.gamerescape.com/w/images/a/a8/Sprint_Icon.png' // Can't find it on XIVApi at all
         },
     },
@@ -40,7 +40,7 @@ async function _getAction(id) {
                         jobs: response.data.ClassJobCategory.Name_en.split(' '),
                         recast: response.data?.Recast100ms ? response.data.Recast100ms / 10 : 0,
                         uses_charges: response.data.MaxCharges > 0,
-                        ...(Utils.getObjValue(_xivapi.overrides, id) || {})
+                        ...(Utils.getObjValue(_xivapi.overrides, response.data.ID) || {})
                     }
                 })
         })

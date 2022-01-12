@@ -155,14 +155,12 @@ function WizardSpellbook() {
         <div className="spellbook-wrap position-absolute d-flex flex-row justify-content-center align-items-center w-100">
             <CSSTransition ref={$spellbook} in={visible} timeout={375}>
                 {/* Spellbook */}
-                <div className="spellbook position-relative d-flex flex-row justify-content-center align-items-center p-2">
+                <div className="spellbook position-relative d-flex flex-row justify-content-center align-items-center py-2 px-4">
                     {/* Actions */}
                     {filtered_resting.length > 0 && filtered_resting.map((action, i) => (
-                        <span key={i} className="action-wrap position-relative d-flex">
-                            <span className="action position-relative d-block w-100 h-100">
-                                <img className="position-relative w-100 h-100" src={action.icon} alt={action.display_name} />
-                                <var className="position-absolute text-center w-100">{action.recast[0]}</var>
-                            </span>
+                        <span key={i} className="action position-relative d-block">
+                            <img className="position-relative w-100 h-100" src={action.icon} alt={action.display_name} />
+                            <var className="position-absolute text-center w-100">{action.recast[0]}</var>
                         </span>
                     ))}
                 </div>

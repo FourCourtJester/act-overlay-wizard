@@ -1,22 +1,25 @@
 // Import core components
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
 import { HashRouter as Router, Routes, Route } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import ErrorBoundary from 'ErrorBoundary'
 
 // Import our components
 import E404 from 'pages/404'
 import Wizard from 'pages/Wizard'
-// import Quill from 'pages/Quill'
 
-// import Actions from 'components/quill/Actions'
-// import Instances from 'components/quill/Instances'
-// import Jobs from 'components/quill/Jobs'
+import { selectVersion } from 'db/slices/version'
 
 // Import style
 // ...
 
 function App() {
-	console.log('ACT Wizard: Ready')
+	const
+		version = useSelector(selectVersion)
+
+	useEffect(() => {
+		console.log(`ACT Wizard v${version}`)
+	}, [version])
 
 	return (
 		<ErrorBoundary>
