@@ -7,7 +7,7 @@ import * as Utils from 'toolkits/utils'
 
 const
     name = 'tome',
-    recast_cutoff = 3,
+    recast_cutoff = 5,
     initial_state = {
         actions: {},
         instances: {},
