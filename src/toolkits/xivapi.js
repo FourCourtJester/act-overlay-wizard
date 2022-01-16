@@ -3,6 +3,7 @@ import Promise from 'bluebird'
 import axios from 'axios'
 
 // Import our components
+import { get as getIcon } from 'toolkits/icons'
 import * as Utils from 'toolkits/utils'
 
 const _xivapi = {
@@ -11,7 +12,7 @@ const _xivapi = {
     overrides: {
         // Sprint
         3: {
-            icon: 'https://ffxiv.gamerescape.com/w/images/a/a8/Sprint_Icon.png' // Can't find it on XIVApi at all
+            icon: getIcon(`action.3`) // Can't find it on XIVApi at all
         },
     },
     type: {

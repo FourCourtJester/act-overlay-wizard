@@ -1,21 +1,47 @@
 @use "bootstrap" as bs;
 
+@mixin draggable {
+    cursor: grab;
+
+    &:active {
+        cursor: grabbing;
+    }
+}
+
 body {
     background: transparent;
     color: bs.$black;
 
-    // &.locked {
-    //
-    // }
-
     &.unlocked {
         background: rgba(bs.$black, 0.3);
+        // background: url("../../public/example_ui_2.jpg") 0 0 no-repeat rgba(bs.$black, 0.3);
         border: 2px solid bs.$pink;
+    }
 
+    &.component-unlocked {
         .spellbook-wrap {
+            @include draggable;
+
             .spellbook {
                 transform: translateY(0);
                 opacity: 1;
+
+                hr {
+                    display: inherit;
+                }
+            }
+        }
+
+        .bestiary-wrap {
+            @include draggable;
+
+            .bestiary {
+                opacity: 1;
+            }
+
+            .react-resizable-handle {
+                display: inherit;
+                cursor: se-resize;
             }
         }
     }
@@ -26,11 +52,25 @@ body {
     color: bs.$light;
 }
 
+// Any kind of styled dialog box
+.ffxiv-dialog {
+    border-radius: 0.5rem;
+    background: #554121;
+    box-shadow: inset 0 1px 1px 0 #cfc36e, inset 0 0 1px 0 hsla(53, 50%, 62%, 0.5), 0 0 1px 2px rgba(0, 0, 0, 0.5),
+        0 2px 2px 2px rgba(0, 0, 0, 0.5);
+
+    .inner-dialog {
+        background: linear-gradient(180deg, #3a3a3a, #1e1e1e 2rem);
+        border-radius: 0.25rem;
+        box-shadow: inset 0 0 0 1px hsla(0, 0%, 100%, 0.1), 0 0 0 2px #222, 0 3px 1px #cfc36e,
+            0 0 2px 1px rgba(0, 0, 0, 0.4);
+        color: bs.$light;
+        text-shadow: -1px -1px 0 bs.$black, 1px -1px 0 bs.$black, -1px 1px 0 bs.$black, 1px 1px 0 bs.$black;
+    }
+}
+
 // Spellbook reminders
 .spellbook-wrap {
-    bottom: 610px;
-    left: 0;
-
     .spellbook {
         background-color: #e7ded5;
         border: 1px solid bs.$black;
@@ -91,6 +131,19 @@ body {
             }
         }
 
+        // Center Line marker
+        hr {
+            background: bs.$pink;
+            display: none;
+            top: -27px;
+            left: 0;
+            margin-left: calc(50% - (2px / 2));
+            width: 2px;
+            height: 76px;
+            opacity: 1;
+            z-index: 4;
+        }
+
         // Transition
         &.enter,
         &.enter-done {
@@ -123,5 +176,28 @@ body {
             box-shadow: inset 0 1px darken(#fff, 60%);
             transform: scaleY(-1);
         }
+    }
+}
+
+// Bestiary Encounter reminders
+.bestiary-wrap {
+    .bestiary {
+        transition: opacity linear 0.375s;
+        opacity: 0;
+
+        // Transition
+        &.enter,
+        &.enter-done {
+            opacity: 1;
+        }
+    }
+
+    .react-resizable-handle {
+        position: absolute;
+        display: none;
+        bottom: 0;
+        right: 0;
+        width: 12px;
+        height: 12px;
     }
 }

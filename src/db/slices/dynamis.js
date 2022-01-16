@@ -18,12 +18,14 @@ const
 
 function getState() {
     try {
-        const persistent_state = Utils.getObjValue(Storage.get(`redux`), name) || initial_state
+        const persistent_state = Utils.getObjValue(Storage.get(`redux`), name) || {}
 
-        // Ensure certain fields exist
-        Utils.setObjValue(persistent_state, 'inclusive', initial_state.inclusive)
-
-        return persistent_state
+        return Object
+            .entries(Utils.getObjPaths(persistent_state))
+            .reduce((obj, [key, val]) => {
+                Utils.setObjValue(obj, key, val)
+                return obj
+            }, initial_state)
     } catch (err) {
         console.error(err)
         return initial_state

@@ -1,12 +1,15 @@
 // Import core components
 import { useContext, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import Draggable from 'react-draggable'
 import { CSSTransition } from 'react-transition-group'
 
 // Import our components
 import { WebSocketContext } from 'contexts/WebSocket'
 import { initYou, clearResting, selectResting, selectRestricted, selectYou, updateResting } from 'db/slices/spellbook'
 import { selectActions } from 'db/slices/tome'
+import { selectComponent, updateDraggable } from 'db/slices/version'
+
 
 // Import style
 // ...
@@ -21,6 +24,7 @@ function WizardSpellbook() {
         recast_threshold = 3, // Number of seconds to pay attention to
         cache = {
             actions: useSelector(selectActions),
+            drag: useSelector((state) => selectComponent(state, 'spellbook')),
             restricted: useSelector(selectRestricted),
             you: useSelector(selectYou),
         },
@@ -28,11 +32,17 @@ function WizardSpellbook() {
         // States
         [filtered_resting, setResting] = useState([]),
         [visible, setVisible] = useState(false),
+        [locked, setLocked] = useState(false),
         [action, setAction] = useState([]),
         [redress, setRedress] = useState([]),
         [zone, setZone] = useState([]),
         // Ref
+        $drag = useRef(null),
         $spellbook = useRef(null)
+
+    function saveDrag(e, data) {
+        dispatch(updateDraggable({ component: 'spellbook', x: data.x, y: data.y }))
+    }
 
     useEffect(() => {
         // Subscribe to ChangePrimaryPlayer
@@ -151,21 +161,31 @@ function WizardSpellbook() {
         setVisible(filtered_resting.length > 0)
     }, [filtered_resting.length])
 
+    // Check for Lock status from OverlayPlugin.dll
+    useEffect(() => {
+        document.addEventListener('onOverlayStateUpdate', (e) => {
+            setLocked(e.detail.isLocked)
+        })
+    }, [])
+
     return (
-        <div className="spellbook-wrap position-absolute d-flex flex-row justify-content-center align-items-center w-100">
-            <CSSTransition ref={$spellbook} in={visible} timeout={375}>
-                {/* Spellbook */}
-                <div className="spellbook position-relative d-flex flex-row justify-content-center align-items-center py-2 px-4">
-                    {/* Actions */}
-                    {filtered_resting.length > 0 && filtered_resting.map((action, i) => (
-                        <span key={i} className="action position-relative d-block">
-                            <img className="position-relative w-100 h-100" src={action.icon} alt={action.display_name} />
-                            <var className="position-absolute text-center w-100">{action.recast[0]}</var>
-                        </span>
-                    ))}
-                </div>
-            </CSSTransition>
-        </div>
+        <Draggable nodeRef={$drag} disabled={locked} defaultPosition={{ x: cache.drag.x, y: cache.drag.y }} onStop={saveDrag}>
+            <div ref={$drag} className="spellbook-wrap position-absolute d-flex flex-row justify-content-center align-items-center">
+                <CSSTransition nodeRef={$spellbook} in={visible} timeout={375}>
+                    {/* Spellbook */}
+                    <div ref={$spellbook} className="spellbook position-relative d-flex flex-row justify-content-center align-items-center py-2 px-4">
+                        {/* Actions */}
+                        {filtered_resting.length > 0 && filtered_resting.map((action, i) => (
+                            <span key={i} className="action position-relative d-block">
+                                <img className="position-relative w-100 h-100" src={action.icon} alt={action.display_name} />
+                                <var className="position-absolute text-center w-100">{action.recast[0]}</var>
+                            </span>
+                        ))}
+                        <hr className="position-absolute" />
+                    </div>
+                </CSSTransition>
+            </div>
+        </Draggable>
     )
 }
 

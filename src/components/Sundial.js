@@ -1,8 +1,9 @@
 // Import core components
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 // Import our components
+import { WebSocketContext } from 'contexts/WebSocket'
 import { selectResting, updateRecast } from 'db/slices/spellbook'
 import { selectActive, updateDuration } from 'db/slices/dynamis'
 
@@ -13,14 +14,39 @@ function WizardSundial() {
     const
         // Redux
         dispatch = useDispatch(),
+        // Context
+        ws = useContext(WebSocketContext),
         // Variables
         resting_actions = useSelector(selectResting),
         active_statuses = useSelector(selectActive),
         t = 1001,
         // States
         [time, setTime] = useState(Date.now()),
+        [line, setLine] = useState([]),
         // Refs
         interval = useRef(null)
+
+    useEffect(() => {
+        // Subscribe to LogLine
+        ws.on('LogLine', 'WizardSpellbook', ({ line, rawLine: raw }) => {
+            switch (+line[0]) {
+                case 0:
+                    setLine(line)
+                    break
+                default: break
+            }
+        })
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ws])
+
+    useEffect(() => {
+        if (!line.length) return false
+
+        // TODO: Lock/unlock components here
+        // document.body.classList.add('component-unlocked')
+        // document.body.classList.remove('component-unlocked')
+    }, [line])
 
     useEffect(() => {
         const entries = Object.values(resting_actions).length + Object.values(active_statuses).length

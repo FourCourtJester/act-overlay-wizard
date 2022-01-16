@@ -4,9 +4,10 @@ import { useEffect } from 'react'
 // Import our components
 import { WebSocketProvider } from 'contexts/WebSocket'
 
+import Bestiary from 'components/Bestiary'
+import Dynamis from 'components/Dynamis'
 import Spellbook from 'components/Spellbook'
 import Sundial from 'components/Sundial'
-import Dynamis from 'components/Dynamis'
 
 // Import style
 // ...
@@ -32,6 +33,7 @@ function WizardPage() {
             <Sundial />
             <Dynamis />
             <Spellbook />
+            <Bestiary />
         </WebSocketProvider>
     )
 }
