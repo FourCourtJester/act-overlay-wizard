@@ -21,7 +21,7 @@ export function h2d(num) {
  * @param {String} str - The string
  * @return {String}
  */
-export function capitalize(str = '', all = false) {
+export function capitalize(str = '') {
     return str.split(' ').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
 }
 

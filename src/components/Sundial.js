@@ -28,7 +28,7 @@ function WizardSundial() {
 
     useEffect(() => {
         // Subscribe to LogLine
-        ws.on('LogLine', 'WizardSpellbook', ({ line, rawLine: raw }) => {
+        ws.on('LogLine', 'WizardSundial', ({ line, rawLine: raw }) => {
             switch (+line[0]) {
                 case 0:
                     setLine(line)
@@ -43,9 +43,24 @@ function WizardSundial() {
     useEffect(() => {
         if (!line.length) return false
 
-        // TODO: Lock/unlock components here
-        // document.body.classList.add('component-unlocked')
-        // document.body.classList.remove('component-unlocked')
+        const [, , color, , description, ..._] = line
+        const [command, ...args] = description.split(' ')
+
+        // Echo and Wizard line
+        if (color !== '0038') return false
+        if (command !== 'wizard') return false
+
+        // Commands
+        switch (args[0]) {
+            case 'lock':
+            case 'unlock':
+                document.body.classList.remove('component-unlocked', 'component-locked')
+                document.body.classList.add(`component-${args[0]}ed`)
+                break
+
+            default: return false
+        }
+
     }, [line])
 
     useEffect(() => {

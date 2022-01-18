@@ -95,25 +95,24 @@ function WizardSpellbook() {
     }, [ws])
 
     // Report Primary Player change
-    useEffect(() => {
-        console.log('Change Primary Player:', cache.you)
-    }, [cache.you])
+    // useEffect(() => {
+    //     console.log('Change Primary Player:', cache.you)
+    // }, [cache.you])
 
     // Parse the incoming Action
     useEffect(() => {
         if (!action.length) return false
 
-        // const [code, ts, source_id, source, id, name, target_id, target, ..._] = line
-        const [, , , source, id, name, , , ..._] = action
+        const [, , , character_name, action_id, action_name, ..._] = action
 
         // Only look at your own spells for now
-        if (source !== cache.you) return false
+        if (character_name !== cache.you) return false
 
         // Ignore a safelist of abilities
-        if (cache.restricted.includes(name.toLowerCase().split('_')[0])) return false
+        if (cache.restricted.includes(action_name.toLowerCase().split('_')[0])) return false
 
         // Update our resting actions
-        dispatch(updateResting(id))
+        dispatch(updateResting(action_id))
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [action])
@@ -122,11 +121,10 @@ function WizardSpellbook() {
     useEffect(() => {
         if (!redress.length) return false
 
-        // const [code, ts, source_id, source, job_id, level, ..._] = line
-        const [, , , source, , , ..._] = redress
+        const [, , , character_name, ..._] = redress
 
         // Only care if we changed classes
-        if (source !== cache.you) return false
+        if (character_name !== cache.you) return false
 
         // Remove all resting actions
         dispatch(clearResting())

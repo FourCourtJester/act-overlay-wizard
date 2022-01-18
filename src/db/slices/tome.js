@@ -14,6 +14,7 @@ const
         jobs: {},
         recast: recast_cutoff,
         statuses: {},
+        zones: {},
     }
 
 function getState() {
@@ -40,16 +41,20 @@ export const tome = createSlice({
         updateAction: (state, { payload: action }) => {
             state.actions[action.id] = action
         },
-        updateStatus: (state, { payload: action }) => {
-            state.statuses[action.id] = action
-        }
+        updateStatus: (state, { payload: status }) => {
+            state.statuses[status.id] = status
+        },
+        updateZone: (state, { payload: zone }) => {
+            state.zones[zone.id] = zone
+        },
     }
 })
 
 // Reducer functions
 export const {
     updateAction,
-    updateStatus
+    updateStatus,
+    updateZone,
 } = tome.actions
 
 // Selector functions
@@ -59,5 +64,6 @@ export const selectInstances = (state) => state[name].instances
 export const selectJobs = (state) => state[name].jobs
 export const selectStatus = (state, id) => state[name].statuses?.[id]
 export const selectRecast = (state) => state[name].recast
+export const selectZone = (state, id) => state[name].zones?.[id]
 
 export default tome.reducer
