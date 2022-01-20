@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import Draggable from 'react-draggable'
 import { ResizableBox } from 'react-resizable'
 import { CSSTransition } from 'react-transition-group'
-import slugify from 'slugify'
 
 // Import our components
 import { WebSocketContext } from 'contexts/WebSocket'
@@ -60,13 +59,10 @@ function WizardBestiary() {
     }, [zone])
 
     useEffect(() => {
-        if (!cache.zone?.id) return false
+        // if (!cache.zone?.id) return false
 
-        // console.log('Change Zone:', cache.zone)
-
-        const slug = slugify(cache.zone.display_name, { strict: true })
-
-        import(`encounters/${slug}`)
+        // import(`encounters/${cache.zone.id}`)
+        import(`encounters/962`)
             .then((script) => {
                 setEncounter(() => script.default)
             })
@@ -89,7 +85,7 @@ function WizardBestiary() {
                 <ResizableBox className="bestiary-resize-wrap" width={cache.component.width} height={cache.component.height} onResizeStop={saveResize}>
                     <CSSTransition nodeRef={$bestiary} in={visible} timeout={375}>
                         <div ref={$bestiary} className="bestiary ffxiv-dialog h-100 w-100 p-1">
-                            <div className="inner-dialog d-flex justify-content-center align-items-center h-100 w-100 p-2">
+                        <div className="inner-dialog scrollbar d-flex h-100 w-100 py-1 px-2">
                                 {
                                     Encounter
                                     ? <Encounter setVisible={setVisible} />

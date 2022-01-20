@@ -8,6 +8,15 @@
     }
 }
 
+@keyframes bestiary-progress {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
+}
+
 body {
     background: transparent;
     color: bs.$black;
@@ -52,12 +61,36 @@ body {
     color: bs.$light;
 }
 
+.scrollbar {
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: rgba(bs.$gray-600, 0.6);
+        background-clip: padding-box;
+        border: 3px solid transparent;
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-track-piece {
+        background-color: transparent;
+        background-clip: padding-box;
+        border: 3px solid transparent;
+        border-radius: 10px;
+    }
+}
+
 // Any kind of styled dialog box
 .ffxiv-dialog {
     border-radius: 0.5rem;
     background: #554121;
     box-shadow: inset 0 1px 1px 0 #cfc36e, inset 0 0 1px 0 hsla(53, 50%, 62%, 0.5), 0 0 1px 2px rgba(0, 0, 0, 0.5),
         0 2px 2px 2px rgba(0, 0, 0, 0.5);
+    color: rgba(255, 255, 255, 0.8);
 
     .inner-dialog {
         background: linear-gradient(180deg, #3a3a3a, #1e1e1e 2rem);
@@ -184,6 +217,14 @@ body {
     .bestiary {
         transition: opacity linear 0.375s;
         opacity: 0;
+
+        .progress {
+            height: 7px;
+
+            .progress-bar {
+                animation-name: bestiary-progress;
+            }
+        }
 
         // Transition
         &.enter,
