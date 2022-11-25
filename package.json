@@ -3,30 +3,48 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.4",
-    "@reduxjs/toolkit": "^1.7.1",
-    "axios": "^0.24.0",
+    "@fortawesome/fontawesome-free": "^6.2.1",
+    "@reduxjs/toolkit": "^1.9.0",
+    "axios": "^1.2.0",
     "bluebird": "^3.7.2",
-    "bootstrap": "^5.1.3",
-    "classnames": "^2.3.1",
-    "nanoid": "^3.1.30",
-    "react": "^17.0.2",
-    "react-bootstrap": "^2.0.4",
-    "react-dom": "^17.0.2",
-    "react-redux": "^7.2.6",
-    "react-router-dom": "^6.2.1",
-    "react-scripts": "5.0.0",
-    "redux": "^4.1.2",
-    "sass": "^1.45.1",
-    "slugify": "^1.6.4"
+    "bootstrap": "^5.2.3",
+    "classnames": "^2.3.2",
+    "html-react-parser": "^3.0.4",
+    "nanoid": "3.3.4",
+    "prop-types": "^15.8.1",
+    "react-bootstrap": "^2.6.0",
+    "react-cookie": "^4.1.1",
+    "react-dom": "^18.2.0",
+    "react-redux": "^8.0.5",
+    "react-router-dom": "^6.4.3",
+    "react-scripts": "^5.0.1",
+    "react-transition-group": "^4.4.5",
+    "sass": "^1.56.1",
+    "slugify": "^1.6.5"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.16.1",
-    "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^13.5.0"
+    "@babel/core": "^7.20.2",
+    "@babel/eslint-parser": "^7.19.1",
+    "@babel/preset-react": "^7.18.6",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
+    "eslint": "^8.27.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-wesbos": "^3.1.4",
+    "eslint-plugin-html": "^7.1.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jsdoc": "^39.6.2",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.31.10",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^2.7.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "BROWSER=none react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -34,8 +52,40 @@
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
-    ]
+      "react-app/jest",
+      "wesbos"
+    ],
+    "rules": {
+      "eslint/class-methods-use-this": 0,
+      "import/no-extraneous-dependencies": 0,
+      "import/no-unresolved": 0,
+      "jsx-a11y/alt-text": 0,
+      "jsx-a11y/media-has-caption": 0,
+      "no-unused-vars": [
+        "warn",
+        {
+          "ignoreRestSiblings": true,
+          "argsIgnorePattern": "_|res|next|^err"
+        }
+      ],
+      "no-use-before-define": [
+        "error",
+        {
+          "functions": false,
+          "classes": true,
+          "variables": true
+        }
+      ],
+      "prettier/prettier": [
+        "warn",
+        {
+          "endOfLine": "auto",
+          "printWidth": 160,
+          "semi": false,
+          "singleQuote": true
+        }
+      ]
+    }
   },
   "browserslist": {
     "production": [
