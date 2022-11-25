@@ -5,11 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            // "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}",
             "name": "Start React",
             "request": "launch",
-            "preLaunchTask": "npm: start",
-            "runtimeExecutable": "exit 0",
+            "runtimeArgs": [
+                "run-script",
+                "start",
+            ],
+            "runtimeExecutable": "npm",
             "type": "node",
         },
         {
