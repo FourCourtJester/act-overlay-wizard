@@ -1,19 +1,23 @@
 // Import core components
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { HashRouter as Router, Routes, Route } from 'react-router-dom'
 
 // Import our components
-// ...
+import { FFXIVRoute } from 'routes'
+import { CombatLog } from 'pages'
 
 // Import style
-// ...
+import 'scss/base.scss'
 
 function App() {
-	return (
-		<Router>
-			<Routes>
-			</Routes>
-		</Router>
-	)
+  return (
+    <Router>
+      <Routes>
+        <Route element={<FFXIVRoute />}>
+          <Route exact path="/" element={<CombatLog />} />
+        </Route>
+      </Routes>
+    </Router>
+  )
 }
 
 export default App
