@@ -85,12 +85,37 @@ var {
     0 2px 2px 2px rgba(0, 0, 0, 0.5);
   color: rgba(255, 255, 255, 0.8);
 
+  hr {
+    box-shadow: 0 -1px 0 rgb(0 0 0 / 40%), inset 0 -1px 0 hsl(0deg 0% 100% / 10%);
+    border: none;
+    height: 1px;
+    min-height: 1px;
+    margin-bottom: 1px;
+  }
+
   .inner-dialog {
-    background: linear-gradient(180deg, #3a3a3a, #1e1e1e 2rem);
+    background: linear-gradient(180deg, #3a3a3a, #1e1e1e 2.5rem);
     border-radius: 0.25rem;
     box-shadow: inset 0 0 0 1px hsla(0, 0%, 100%, 0.1), 0 0 0 2px #222, 0 3px 1px #cfc36e,
       0 0 2px 1px rgba(0, 0, 0, 0.4);
     color: bs.$light;
     text-shadow: var.$text-shadow;
+  }
+}
+
+.h-101 {
+  height: 100.001vh !important;
+}
+
+#combat-log {
+  .scrollbar {
+    * {
+      overflow-anchor: none;
+    }
+
+    #anchor {
+      overflow-anchor: auto;
+      height: 1px;
+    }
   }
 }

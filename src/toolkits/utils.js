@@ -1,6 +1,6 @@
 /**
  * Converts Decimal to Hexadecimal
- * @param {Number} num
+ * @param {String} num
  * @returns
  */
 export function d2h(num) {
