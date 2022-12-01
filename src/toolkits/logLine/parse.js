@@ -52,7 +52,6 @@ function addCombatant(line) {
   ] = line
 
   return {
-    event: 'AddCombatant',
     ts,
     actorID,
     actorName,
@@ -80,7 +79,7 @@ function addCombatant(line) {
  */
 function removeCombatant(line) {
   const [, ts, actorID, actorName, actorJob, actorLevel, ownerID, ownerWorldID, ownerWorldName, ..._] = line
-  return { event: 'RemoveCombatant', ts, actorID, actorName, actorJob, actorLevel, ownerID, ownerWorldID, ownerWorldName }
+  return { ts, actorID, actorName, actorJob, actorLevel, ownerID, ownerWorldID, ownerWorldName }
 }
 
 /**

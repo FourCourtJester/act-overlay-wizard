@@ -1,7 +1,7 @@
 // Import core components
 import { useCallback } from 'react'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import classNames from 'classnames'
+import store from 'db/store'
 
 // Import Styling
 // ...
@@ -11,18 +11,35 @@ import * as Utils from 'toolkits/utils'
 import { url } from 'toolkits/xivapi'
 
 function format(entry) {
-  const message = entry.message.split('@').map((part) => {
+  const state = store.getState()
+  const message = entry.split('@').map((part) => {
     if (!part.length) return false
-    if (!entry.entities[part]) return part
+    if (part.indexOf('|') === -1) return part
 
-    return (
-      <span className={`text-${Utils.getObjValue(entry.entities[part], 'job.shortName')}`}>
-        <OverlayTrigger placement="top" overlay={<Tooltip id="tooltip-job">{Utils.getObjValue(entry.entities[part], 'job.displayName')}</Tooltip>}>
-          <img className="job-icon" src={`${url}/${Utils.getObjValue(entry.entities[part], 'job.icon')}`} />
-        </OverlayTrigger>
-        {Utils.getObjValue(entry.entities[part], 'combatant.actorName')}
-      </span>
-    )
+    const [field, ...ids] = part.split('|')
+
+    switch (field) {
+      case 'combatant': {
+        const combatant = state[field]?.[ids[0]]
+        const job = state.job[combatant?.actorJob]
+        const img = job?.icon
+
+        return (
+          <>
+            {img && (
+              <OverlayTrigger placement="top" overlay={<Tooltip id="tooltip-job">{job?.displayName}</Tooltip>}>
+                <img className="job-icon" src={`${url}/${job?.icon}`} />
+              </OverlayTrigger>
+            )}
+            <span className={`text-${job?.shortName}`}>{combatant?.actorName}</span>
+          </>
+        )
+      }
+
+      default: {
+        return part
+      }
+    }
   })
 
   return (

@@ -1,6 +1,43 @@
 // Import our components
-import { assignEntities, parse } from 'toolkits/logLine'
+import { parse } from 'toolkits/logLine'
 import * as Utils from 'toolkits/utils'
+
+function _f(field, obj) {
+  switch (field) {
+    // Players & Pets & NPCs
+    case 'actorID':
+    case 'sourceID':
+    case 'targetID': {
+      return `@combatant|${obj[field]}@`
+    }
+
+    // Actions
+    case 'actionName': {
+      break
+    }
+
+    // Effects
+    case 'effectName': {
+      break
+    }
+
+    // Markers
+    case 'iconID': {
+      break
+    }
+
+    // Tethers
+    case 'tetherID': {
+      break
+    }
+
+    default: {
+      break
+    }
+  }
+
+  return obj[field]
+}
 
 /**
  * Change Zone
@@ -25,7 +62,7 @@ import * as Utils from 'toolkits/utils'
 //   const obj = parse(line)
 
 //   // console.log('ChangePlayer', ts, actorID, actorName)
-//   return `Player changes to @actorName@`
+//   return `Player changes to ${_f('actorID', obj)}`
 // }
 
 /**
@@ -56,7 +93,7 @@ function addCombatant(line) {
   //   actorZ,
   //   actorFacing
   // )
-  return assignEntities(obj, `@actorName@ has appeared somewhere nearby`)
+  return `${_f('actorID', obj)} has appeared somewhere nearby`
 }
 
 /**
@@ -69,7 +106,7 @@ function removeCombatant(line) {
   const obj = parse(line)
 
   // console.log('RemoveCombatant', ts, actorID, actorName, actorJob, actorLevel, ownerID, ownerWorldID, ownerWorldName)
-  return assignEntities(obj, `@actorName@ has disappeared`)
+  return `${_f('actorID', obj)} has disappeared`
 }
 
 /**
@@ -131,11 +168,9 @@ function actionCasting(line) {
   obj.castTime = Number(obj.castTime).toFixed(1)
   obj.actionName = Utils.capitalize(obj.actionName)
 
-  const message = selfCasted
-    ? `@actorName@ begins to cast @actionName@ (@castTime@ seconds)`
-    : `@actorName@ begins to cast @actionName@ on @targetName@ (@castTime@ seconds)`
-
-  return assignEntities(obj, message)
+  return selfCasted
+    ? `${_f('actorID', obj)} begins to cast ${_f('actionID', obj)} (${_f('castTime', obj)} seconds)`
+    : `${_f('actorID', obj)} begins to cast ${_f('actionID', obj)} on ${_f('targetID', obj)} (${_f('castTime', obj)} seconds)`
 }
 
 /**
@@ -177,8 +212,9 @@ function actionCasted(line) {
   //   actorZ,
   //   actorFacing
   // )
-  const message = selfCasted ? `@actorName@ casts @actionName@ on themselves` : `@actorName@ casts @actionName@ on @targetName@`
-  return assignEntities(obj, message)
+  return selfCasted
+    ? `${_f('actorID', obj)} casts ${_f('actionID', obj)} on themselves`
+    : `${_f('actorID', obj)} casts ${_f('actionID', obj)} on ${_f('targetID', obj)}`
 }
 
 /**
@@ -192,7 +228,7 @@ function actionCancelled(line) {
 
   // console.log('ActionCancelled', ts, actorID, actorName, actionID, actionName, reason)
   obj.reason = obj.reason.toLowerCase()
-  return assignEntities(obj, `@actorName@ has @actionName@ @reason@`)
+  return `${_f('actorID', obj)} has ${_f('actionID', obj)} ${_f('reason', obj)}`
 }
 
 /**
@@ -225,7 +261,7 @@ function dotTick(line) {
   obj.stat = obj.effectType === 'HoT' ? 'health' : 'damage'
   obj.effectResult = Utils.h2d(obj.effectResult)
 
-  return assignEntities(obj, `@actorName@ @action@ @effectResult@ @stat@`)
+  return `${_f('actorID', obj)} ${_f('action', obj)} ${_f('effectResult', obj)} ${_f('stat', obj)}`
 }
 
 /**
@@ -238,7 +274,7 @@ function death(line) {
   const obj = parse(line)
 
   // console.log('Death', ts, actorID, actorName, sourceID, sourceName)
-  return assignEntities(obj, `@actorName@ dies`)
+  return `${_f('actorID', obj)} dies`
 }
 
 /**
@@ -254,11 +290,9 @@ function gainEffect(line) {
   // console.log('GainEffect', ts, effectID, effectName, effectDuration, sourceID, sourceName, actorID, actorName, actorMaxHP, sourceMaxHP)
   obj.effectDuration = Math.round(Number(obj.effectDuration)).toFixed(1)
 
-  const message = selfCasted
-    ? `@actorName@ gains the effect of @effectName@ for @effectDuration@ seconds`
-    : `@actorName@ gains the effect of @effectName@ for @effectDuration@ seconds from @sourceName@`
-
-  return assignEntities(obj, message)
+  return selfCasted
+    ? `${_f('actorID', obj)} gains the effect of ${_f('effectID', obj)} for ${_f('effectDuration', obj)} seconds`
+    : `${_f('actorID', obj)} gains the effect of ${_f('effectID', obj)} for ${_f('effectDuration', obj)} seconds from ${_f('sourceID', obj)}`
 }
 
 /**
@@ -271,7 +305,7 @@ function gainMarker(line) {
   const obj = parse(line)
 
   // console.log('GainMarker', ts, actorID, actorName, iconField1, iconField2, iconID)
-  return assignEntities(obj, `@actorName@ gains the marker @iconID@`)
+  return `${_f('actorID', obj)} gains the marker ${_f('iconID', obj)}`
 }
 
 /**
@@ -285,8 +319,9 @@ function loseEffect(line) {
   const selfCasted = obj.sourceID === obj.actorID
 
   // console.log('LoseEffect', ts, effectID, effectName, sourceID, sourceName, actorID, actorName)
-  const message = selfCasted ? `@actorName@ loses the effect of @effectName@` : `@actorName@ loses the effect of @effectName@ from @sourceName@`
-  return assignEntities(obj, message)
+  return selfCasted
+    ? `${_f('actorID', obj)} loses the effect of ${_f('effectID', obj)}`
+    : `${_f('actorID', obj)} loses the effect of ${_f('effectID', obj)} from ${_f('sourceID', obj)}`
 }
 
 /**
@@ -299,7 +334,7 @@ function gameControl(line) {
   const obj = parse(line)
 
   // console.log('GameControl', ts, instanceID, commandID, ...data)
-  return assignEntities(obj, 'GameControl occured')
+  return 'GameControl occured'
 }
 
 /**
@@ -312,7 +347,7 @@ function gainTether(line) {
   const obj = parse(line)
 
   // console.log('GainTether', ts, sourceID, sourceName, actorID, actorName, tetherID)
-  return assignEntities(obj, `@actorName@ gains the tether @tetherID@ from @sourceName@`)
+  return `${_f('actorID', obj)} gains the tether ${_f('tetherID', obj)} from ${_f('sourceID', obj)}`
 }
 
 export function format(line) {
