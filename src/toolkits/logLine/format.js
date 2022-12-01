@@ -1,34 +1,42 @@
+// Import our components
+import { parse } from 'toolkits/logLine'
 import * as Utils from 'toolkits/utils'
 
 /**
  * Change Zone
- * @param {Object} obj
+ * @param {Array} line
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-01-0x01-changezone
  */
-function changeZone(obj) {
+function changeZone(line) {
+  const obj = parse(line)
+
   // console.log('ChangeZone', ts, zoneID, zoneName)
-  return `Zone has changed to ${obj.zoneName}`
+  return `Zone changes to ${obj.zoneName}`
 }
 
 /**
  * Change Player
- * @param {Object} obj
+ * @param {Array} line
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-02-0x02-changeprimaryplayer
  */
-function changePlayer(obj) {
+function changePlayer(line) {
+  const obj = parse(line)
+
   // console.log('ChangePlayer', ts, actorID, actorName)
-  return `Player has changed to ${obj.actorName}`
+  return `Player changes to ${obj.actorName}`
 }
 
 /**
  * Add Combatant
- * @param {Object} obj
+ * @param {Array} line
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-03-0x03-addcombatant
  */
-function addCombatant(obj) {
+function addCombatant(line) {
+  const obj = parse(line)
+
   // console.log(
   //   'AddCombatant',
   //   ts,
@@ -48,38 +56,44 @@ function addCombatant(obj) {
   //   actorZ,
   //   actorFacing
   // )
-  return `${obj.actorName} has been added somewhere nearby`
+  return `${obj.actorName} has been seen somewhere nearby`
 }
 
 /**
  * Remove Combatant
- * @param {Object} obj
+ * @param {Array} line
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-04-0x04-removecombatant
  */
-function removeCombatant(obj) {
+function removeCombatant(line) {
+  const obj = parse(line)
+
   // console.log('RemoveCombatant', ts, actorID, actorName, actorJob, actorLevel, ownerID, ownerWorldID, ownerWorldName)
-  return `${obj.actorName} has been removed from play`
+  return `${obj.actorName} has disappeared`
 }
 
 /**
  * Party Change
- * @param {Object} obj
+ * @param {Array} line
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-11-0x0b-partylist
  */
-function partyChange(obj) {
+function partyChange(line) {
+  const obj = parse(line)
+
   // console.log('PartyChange', ts, partySize, ...partyIDs)
-  return `Party size has changed to ${obj.partySize}`
+  return `Party changes to ${obj.partySize} members`
 }
 
 /**
  * Player Stat Change
- * @param {Object} obj
+ * @param {Array} line
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-12-0x0c-playerstats
  */
-function playerStatChange(obj) {
+function playerStatChange(line) {
+  const obj = parse(line)
+
   // console.log(
   //   'StatChanged',
   //   ts,
@@ -100,27 +114,36 @@ function playerStatChange(obj) {
   //   spellSpeed,
   //   tenacity
   // )
-  return `Player stats have been modified`
+  return `Player stats change`
 }
 
 /**
  * Action Casting
- * @param {Object} obj
+ * @param {Array} line
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-20-0x14-networkstartscasting
  */
-function actionCasting(obj) {
+function actionCasting(line) {
+  const obj = parse(line)
+  const selfCasted = obj.targetID === obj.actorID
+  const castTime = Number(obj.castTime).toFixed(1)
+
   // console.log('ActionCasting', ts, actorID, actorName, actionID, actionName, targetID, targetName, castTime, actorX, actorY, actorZ, actorFacing)
-  return `${obj.actorName} has started to cast ${Utils.capitalize(obj.actionName)} on ${obj.targetName} in ${obj.castTime} seconds`
+  return selfCasted
+    ? `${obj.actorName} begins to cast ${Utils.capitalize(obj.actionName)} (${castTime} seconds)`
+    : `${obj.actorName} begins to cast ${Utils.capitalize(obj.actionName)} on ${obj.targetName} (${castTime} seconds)`
 }
 
 /**
  * Action Castied
- * @param {Object} obj
+ * @param {Array} line
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-21-0x15-networkability
  */
-function actionCasted(obj) {
+function actionCasted(line) {
+  const obj = parse(line)
+  const selfCasted = obj.targetID === obj.actorID
+
   // console.log(
   //   'ActionCasted',
   //   ts,
@@ -150,27 +173,32 @@ function actionCasted(obj) {
   //   actorZ,
   //   actorFacing
   // )
-  return `${obj.actorName} casts ${Utils.capitalize(obj.actionName)} on ${obj.targetName}`
+  return selfCasted
+    ? `${obj.actorName} casts ${Utils.capitalize(obj.actionName)} on themselves`
+    : `${obj.actorName} casts ${Utils.capitalize(obj.actionName)} on ${obj.targetName}`
 }
 
 /**
  * Action Cancelled
- * @param {Object} obj
+ * @param {Array} line
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-23-0x17-networkcancelability
  */
-function actionCancelled(obj) {
+function actionCancelled(line) {
+  const obj = parse(line)
+
   // console.log('ActionCancelled', ts, actorID, actorName, actionID, actionName, reason)
-  return `${obj.actorName} has had ${Utils.capitalize(obj.actionName)} ${obj.reason}`
+  return `${obj.actorName} has ${Utils.capitalize(obj.actionName)} ${obj.reason.toLowerCase()}`
 }
 
 /**
  * HoT or DoT Tick
- * @param {Object} obj
+ * @param {Array} line
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-24-0x18-networkdot
  */
-function dotTick(obj) {
+function dotTick(line) {
+  const obj = parse(line)
   const action = obj.effectType === 'HoT' ? 'regains' : 'suffers'
   const stat = obj.effectType === 'HoT' ? 'health' : 'damage'
 
@@ -196,160 +224,176 @@ function dotTick(obj) {
 
 /**
  * Death
- * @param {Object} obj
+ * @param {Array} line
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-25-0x19-networkdeath
  */
-function death(obj) {
+function death(line) {
+  const obj = parse(line)
+
   // console.log('Death', ts, actorID, actorName, sourceID, sourceName)
-  return `${obj.actorName} has died`
+  return `${obj.actorName} dies`
 }
 
 /**
  * Gains Effect
- * @param {Object} obj
+ * @param {Array} line
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-26-0x1a-networkbuff
  */
-function gainEffect(obj) {
+function gainEffect(line) {
+  const obj = parse(line)
   const selfCasted = obj.sourceID === obj.actorID
+  const effectDuration = Math.round(Number(obj.effectDuration)).toFixed(1)
 
   // console.log('GainEffect', ts, effectID, effectName, effectDuration, sourceID, sourceName, actorID, actorName, actorMaxHP, sourceMaxHP)
   return selfCasted
-    ? `${obj.actorName} has gained the effects of ${obj.effectName} for ${Math.round(+obj.effectDuration)} seconds`
-    : `${obj.actorName} has gained the effects of ${obj.effectName} for ${Math.round(+obj.effectDuration)} seconds from ${obj.sourceName}`
+    ? `${obj.actorName} gains the effect of ${obj.effectName} for ${effectDuration} seconds`
+    : `${obj.actorName} gains the effect of ${obj.effectName} for ${effectDuration} seconds from ${obj.sourceName}`
 }
 
 /**
  * Gains Marker
- * @param {Object} obj
+ * @param {Array} line
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-26-0x1a-networkbuff
  */
-function gainMarker(obj) {
+function gainMarker(line) {
+  const obj = parse(line)
+
   // console.log('GainMarker', ts, actorID, actorName, iconField1, iconField2, iconID)
-  return `${obj.actorName} has gained the marker ${obj.iconID}`
+  return `${obj.actorName} gains the marker ${obj.iconID}`
 }
 
 /**
  * Lose Effect
- * @param {Object} obj
+ * @param {Array} line
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-30-0x1e-networkbuffremove
  */
-function loseEffect(obj) {
+function loseEffect(line) {
+  const obj = parse(line)
+  const selfCasted = obj.sourceID === obj.actorID
+
   // console.log('LoseEffect', ts, effectID, effectName, sourceID, sourceName, actorID, actorName)
-  return `${obj.actorName} has lost the effects of ${obj.effectName} from ${obj.sourceName}`
+  return selfCasted ? `${obj.actorName} loses the effect of ${obj.effectName}` : `${obj.actorName} loses the effect of ${obj.effectName} from ${obj.sourceName}`
 }
 
 /**
  * Game Control
- * @param {Object} obj
+ * @param {Array} line
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-33-0x21-network6d-actor-control
  */
-function gameControl(obj) {
+function gameControl(line) {
+  const obj = parse(line)
+
   // console.log('GameControl', ts, instanceID, commandID, ...data)
   return 'GameControl occured'
 }
 
 /**
  * Gain Tether
- * @param {Object} obj
+ * @param {Array} line
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-35-0x23-networktether
  */
-function gainTether(obj) {
+function gainTether(line) {
+  const obj = parse(line)
+
   // console.log('GainTether', ts, sourceID, sourceName, actorID, actorName, tetherID)
-  return `${obj.actorName} has gained the tether ${obj.tetherID} from ${obj.sourceName}`
+  return `${obj.actorName} gains the tether ${obj.tetherID} from ${obj.sourceName}`
 }
 
-export function format(event, obj) {
+export function format(line) {
+  const event = +line[0]
+
   switch (event) {
     // Change Zone
     case 1: {
-      return changeZone(obj)
+      return changeZone(line)
     }
 
     // Change Character
     case 2: {
-      return changePlayer(obj)
+      return changePlayer(line)
     }
 
     // Add a Combatant
     case 3: {
-      return addCombatant(obj)
+      return addCombatant(line)
     }
 
     // Remove Combatant
     case 4: {
-      return removeCombatant(obj)
+      return removeCombatant(line)
     }
 
     // Party Change
     case 11: {
-      return partyChange(obj)
+      return partyChange(line)
     }
 
     // Player Stat Change
-    case 12: {
-      return playerStatChange(obj)
-    }
+    // case 12: {
+    //   return playerStatChange(line)
+    // }
 
     // Action Is Casting
     case 20: {
-      return actionCasting(obj)
+      return actionCasting(line)
     }
 
     // Action
     // AoE Action
     case 21:
     case 22: {
-      return actionCasted(obj)
+      return actionCasted(line)
     }
 
     // Action was Cancelled
     case 23: {
-      return actionCancelled(obj)
+      return actionCancelled(line)
     }
 
     // HoT or DoT entry
     case 24: {
-      return dotTick(obj)
+      return dotTick(line)
     }
 
     // Death
     case 25: {
-      return death(obj)
+      return death(line)
     }
 
     // Buff or Debuff
     case 26: {
-      return gainEffect(obj)
+      return gainEffect(line)
     }
 
     // Marker
     case 27: {
-      return gainMarker(obj)
+      return gainMarker(line)
     }
 
     // Buff or Debuff removal
     case 30: {
-      return loseEffect(obj)
+      return loseEffect(line)
     }
 
     // Game Control
     case 33: {
-      return gameControl(obj)
+      return gameControl(line)
     }
 
     // Tether
     case 35: {
-      return gainTether(obj)
+      return gainTether(line)
     }
 
     // Uninteresting LogLines
     // 00 - Chat Message
+    // 12 - Stat Change
     // 28 - Waymark
     // 29 - Sign
     // 31 - Job Gauge loss/gain
@@ -361,6 +405,7 @@ export function format(event, obj) {
     // 39 - Batched HP Update
     // 41 - System Message
     case 0:
+    case 12:
     case 28:
     case 29:
     case 31:
@@ -371,12 +416,12 @@ export function format(event, obj) {
     case 38:
     case 39:
     case 41: {
-      break
+      return false
     }
 
     // Unhandled
     default: {
-      return 'Unknown event'
+      return `Unknown event [${event}]`
     }
   }
 }

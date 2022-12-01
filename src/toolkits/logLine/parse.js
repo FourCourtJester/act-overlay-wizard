@@ -6,8 +6,6 @@
  */
 function changeZone(line) {
   const [, ts, zoneID, zoneName, ..._] = line
-
-  // console.log('ChangeZone', ts, zoneID, zoneName)
   return { ts, zoneID, zoneName }
 }
 
@@ -19,8 +17,6 @@ function changeZone(line) {
  */
 function changePlayer(line) {
   const [, ts, actorID, actorName, ..._] = line
-
-  // console.log('ChangePlayer', ts, actorID, actorName)
   return { ts, actorID, actorName }
 }
 
@@ -55,25 +51,6 @@ function addCombatant(line) {
     ..._
   ] = line
 
-  // console.log(
-  //   'AddCombatant',
-  //   ts,
-  //   actorID,
-  //   actorName,
-  //   actorJob,
-  //   actorLevel,
-  //   ownerID,
-  //   ownerWorldID,
-  //   ownerWorldName,
-  //   currentHP,
-  //   maxHP,
-  //   currentMP,
-  //   maxMP,
-  //   actorX,
-  //   actorY,
-  //   actorZ,
-  //   actorFacing
-  // )
   return {
     ts,
     actorID,
@@ -102,8 +79,6 @@ function addCombatant(line) {
  */
 function removeCombatant(line) {
   const [, ts, actorID, actorName, actorJob, actorLevel, ownerID, ownerWorldID, ownerWorldName, ..._] = line
-
-  // console.log('RemoveCombatant', ts, actorID, actorName, actorJob, actorLevel, ownerID, ownerWorldID, ownerWorldName)
   return { ts, actorID, actorName, actorJob, actorLevel, ownerID, ownerWorldID, ownerWorldName }
 }
 
@@ -117,7 +92,6 @@ function partyChange(line) {
   const [, ts, partySize, ...rawPartyIDs] = line
   const partyIDs = rawPartyIDs.slice(0, +partySize)
 
-  // console.log('PartyChange', ts, partySize, ...partyIDs)
   return { ts, party: partyIDs.filter((player) => player.startsWith('10')) }
 }
 
@@ -151,26 +125,6 @@ function playerStatChange(line) {
     ..._
   ] = line
 
-  // console.log(
-  //   'StatChanged',
-  //   ts,
-  //   actorJob,
-  //   strength,
-  //   dexterity,
-  //   vitality,
-  //   intelligence,
-  //   mind,
-  //   piety,
-  //   attackPower,
-  //   directHit,
-  //   criticalHit,
-  //   magicPotency,
-  //   healingPotency,
-  //   determination,
-  //   skillSpeed,
-  //   spellSpeed,
-  //   tenacity
-  // )
   return {
     ts,
     actorJob,
@@ -201,7 +155,6 @@ function playerStatChange(line) {
 function actionCasting(line) {
   const [, ts, actorID, actorName, actionID, actionName, targetID, targetName, castTime, actorX, actorY, actorZ, actorFacing, ..._] = line
 
-  // console.log('ActionCasting', ts, actorID, actorName, actionID, actionName, targetID, targetName, castTime, actorX, actorY, actorZ, actorFacing)
   return { ts, actorID, actorName, actionID, actionName, targetID, targetName, castTime, actorX, actorY, actorZ, actorFacing }
 }
 
@@ -238,35 +191,6 @@ function actionCasted(line) {
     ..._
   ] = rest.slice(14)
 
-  // console.log(
-  //   'ActionCasted',
-  //   ts,
-  //   actorID,
-  //   actorName,
-  //   actionID,
-  //   actionName,
-  //   targetID,
-  //   targetName,
-  //   resultFlags,
-  //   result,
-  //   ...flags,
-  //   targetCurrentHP,
-  //   targetMaxHP,
-  //   targetCurrentMP,
-  //   targetMaxMP,
-  //   targetX,
-  //   targetY,
-  //   targetZ,
-  //   targetFacing,
-  //   actorCurrentHP,
-  //   actorMaxHP,
-  //   actorCurrentMP,
-  //   actorMaxMP,
-  //   actorX,
-  //   actorY,
-  //   actorZ,
-  //   actorFacing
-  // )
   return {
     ts,
     actorID,
@@ -305,8 +229,6 @@ function actionCasted(line) {
  */
 function actionCancelled(line) {
   const [, ts, actorID, actorName, actionID, actionName, reason, ..._] = line
-
-  // console.log('ActionCancelled', ts, actorID, actorName, actionID, actionName, reason)
   return { ts, actorID, actorName, actionID, actionName, reason }
 }
 
@@ -338,23 +260,6 @@ function dotTick(line) {
     ..._
   ] = line
 
-  // console.log(
-  //   effectType,
-  //   ts,
-  //   actorID,
-  //   actorName,
-  //   effectType,
-  //   effectID,
-  //   effectResult,
-  //   actorCurrentHP,
-  //   actorMaxHP,
-  //   actorCurrentMP,
-  //   actorMaxMP,
-  //   actorX,
-  //   actorY,
-  //   actorZ,
-  //   actorFacing
-  // )
   return {
     ts,
     actorID,
@@ -381,8 +286,6 @@ function dotTick(line) {
  */
 function death(line) {
   const [, ts, actorID, actorName, sourceID, sourceName, ..._] = line
-
-  // console.log('Death', ts, actorID, actorName, sourceID, sourceName)
   return { ts, actorID, actorName, sourceID, sourceName }
 }
 
@@ -394,8 +297,6 @@ function death(line) {
  */
 function gainEffect(line) {
   const [, ts, effectID, effectName, effectDuration, sourceID, sourceName, actorID, actorName, , actorMaxHP, sourceMaxHP, ..._] = line
-
-  // console.log('GainEffect', ts, effectID, effectName, effectDuration, sourceID, sourceName, actorID, actorName, actorMaxHP, sourceMaxHP)
   return { ts, effectID, effectName, effectDuration, sourceID, sourceName, actorID, actorName, actorMaxHP, sourceMaxHP }
 }
 
@@ -407,8 +308,6 @@ function gainEffect(line) {
  */
 function gainMarker(line) {
   const [, ts, actorID, actorName, iconField1, iconField2, iconID, ..._] = line
-
-  // console.log('GainMarker', ts, actorID, actorName, iconField1, iconField2, iconID)
   return { ts, actorID, actorName, iconField1, iconField2, iconID }
 }
 
@@ -420,8 +319,6 @@ function gainMarker(line) {
  */
 function loseEffect(line) {
   const [, ts, effectID, effectName, , sourceID, sourceName, actorID, actorName, ..._] = line
-
-  // console.log('LoseEffect', ts, effectID, effectName, sourceID, sourceName, actorID, actorName)
   return { ts, effectID, effectName, sourceID, sourceName, actorID, actorName }
 }
 
@@ -435,7 +332,6 @@ function gameControl(line) {
   const [, ts, instanceID, commandID, ...rawData] = line
   const data = rawData.slice(0, 4)
 
-  // console.log('GameControl', ts, instanceID, commandID, ...data)
   return { ts, instanceID, commandID, data }
 }
 
@@ -447,12 +343,12 @@ function gameControl(line) {
  */
 function gainTether(line) {
   const [, ts, sourceID, sourceName, actorID, actorName, , , tetherID, ..._] = line
-
-  // console.log('GainTether', ts, sourceID, sourceName, actorID, actorName, tetherID)
   return { ts, sourceID, sourceName, actorID, actorName, tetherID }
 }
 
-export function parse(event, line) {
+export function parse(line) {
+  const event = +line[0]
+
   switch (event) {
     // Change Zone
     case 1: {
@@ -480,9 +376,9 @@ export function parse(event, line) {
     }
 
     // Player Stat Change
-    case 12: {
-      return playerStatChange(line)
-    }
+    // case 12: {
+    //   return playerStatChange(line)
+    // }
 
     // Action Is Casting
     case 20: {
@@ -538,6 +434,7 @@ export function parse(event, line) {
 
     // Uninteresting LogLines
     // 00 - Chat Message
+    // 12 - Stat Change
     // 28 - Waymark
     // 29 - Sign
     // 31 - Job Gauge loss/gain
@@ -548,24 +445,24 @@ export function parse(event, line) {
     // 38 - NPC Effects
     // 39 - Batched HP Update
     // 41 - System Message
-    case 0:
-    case 28:
-    case 29:
-    case 31:
-    case 32:
-    case 34:
-    case 36:
-    case 37:
-    case 38:
-    case 39:
-    case 41: {
-      break
-    }
+    // case 0:
+    // case 12:
+    // case 28:
+    // case 29:
+    // case 31:
+    // case 32:
+    // case 34:
+    // case 36:
+    // case 37:
+    // case 38:
+    // case 39:
+    // case 41: {
+    //   return {}
+    // }
 
     // Unhandled
     default: {
-      console.log(line)
-      break
+      return {}
     }
   }
 }

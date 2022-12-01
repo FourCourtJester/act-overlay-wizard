@@ -5,7 +5,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import * as Storage from 'toolkits/storage'
 import * as Utils from 'toolkits/utils'
 
-const name = 'combatLog'
+const name = 'combatant'
 const initialState = {
   entries: {},
 }
@@ -26,28 +26,26 @@ function getState() {
   }
 }
 
-// CombatLog Slice
-export const combatLog = createSlice({
-  name: 'combatLog',
+// Combatant Slice
+export const combatant = createSlice({
+  name: 'combatant',
   initialState: getState(),
   reducers: {
-    add: (state, action) => {
-      // console.log('Create Combat Log: ', action.payload)
-      Utils.setObjValue(state.entries, action.payload, [])
+    add: (state, { payload }) => {
+      Utils.setObjValue(state.entries, payload.actorID, payload)
     },
-    update: (state, action) => {
-      const log = Utils.getObjValue(state.entries, action.payload?.id)
-      if (log && action.payload?.entry) log.push(action.payload.entry)
+    remove: (state, { payload }) => {
+      delete state.entries[payload.actorID]
     },
   },
 })
 
 // Reducer functions
-export const { add: addCombatLogEntry, update: updateCombatLogEntry } = combatLog.actions
+export const { add: addCombatantEntry, remove: removeCombatantEntry } = combatant.actions
 
 // Selector functions
-export const selectCombatLogEntry = (state, id) =>
+export const selectCombatantEntry = (state, id) =>
   // console.log(state, id)
-  Utils.getObjValue(state.combatLog.entries, id) || []
+  Utils.getObjValue(state.combatant.entries, id) || []
 
-export default combatLog.reducer
+export default combatant.reducer

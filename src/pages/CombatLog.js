@@ -7,8 +7,9 @@ import { nanoid } from 'nanoid'
 // Import our components
 import { WebSocket } from 'contexts'
 import { addCombatLogEntry, selectCombatLogEntry, updateCombatLogEntry } from 'db/slices/combatLog'
+import { addCombatantEntry, removeCombatantEntry } from 'db/slices/combatant'
 import { format, parse } from 'toolkits/logLine'
-import { useEffectOnce } from 'components/hooks'
+import { useEffectOnce, useObjectEffect } from 'components/hooks'
 
 // Import style
 // ...
@@ -58,29 +59,27 @@ function CombatLog() {
     ws.on('LogLine', {
       CombatLog: {
         success: ({ line }) => {
-          const event = +line[0]
-          switch (event) {
-            case 20:
-            case 21:
-            case 22:
-            case 23:
-            case 24:
-            case 25:
-            case 26:
-            case 27:
-            case 30:
-            case 33:
-            case 35: {
-              const data = parse(event, line)
-              const msg = format(event, data)
+          dispatch(updateCombatLogEntry({ id: combatLogID.current, entry: format(line) }))
+        },
+      },
+    })
 
-              dispatch(updateCombatLogEntry({ id: combatLogID.current, entry: msg }))
+    ws.on('LogLine', {
+      Combatant: {
+        success: ({ line }) => {
+          switch (+line[0]) {
+            case 3: {
+              dispatch(addCombatantEntry(parse(line)))
               break
             }
 
-            default: {
+            case 4: {
+              dispatch(removeCombatantEntry(parse(line)))
               break
             }
+
+            default:
+              break
           }
         },
       },
@@ -88,15 +87,16 @@ function CombatLog() {
 
     return () => {
       ws.off('connect', ['CombatLog'])
+      ws.off('LogLine', ['CombatLog', 'Combatant'])
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ws])
 
-  useEffect(() => {
-    // TODO: Trigger a scroll upon becoming scrollable. Then stop triggering.
-    // if ($scroll.current.clientHeight < $scroll.current.scrollHeight) $scroll.current.scroll(0, $scroll.current.scrollHeight)
-  }, [combatLog])
+  // useObjectEffect(() => {
+  //   console.log(combatLog)
+  // if ($scroll.current.clientHeight < $scroll.current.scrollHeight) $scroll.current.scroll(0, $scroll.current.scrollHeight)
+  // }, [combatLog])
 
   useEffectOnce(() => {
     dispatch(addCombatLogEntry(combatLogID.current))
