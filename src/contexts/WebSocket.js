@@ -1,4 +1,4 @@
-// Import React and Components
+// Import core components
 import { createContext } from 'react'
 import { useLocation } from 'react-router-dom'
 

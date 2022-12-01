@@ -30,9 +30,24 @@ async function _getAction(id) {
           display_name: response.data.Name_en,
           jobs: response.data.ClassJobCategory.Name_en.split(' '),
           recast: response.data.Recast100ms / 10,
-          duration: response.data.Description_en ? +response.data.Description_en.match(/Duration:<\/span>\s(\d+)s/)?.[1] : 0,
+          // duration: response.data.Description_en ? +response.data.Description_en.match(/Duration:<\/span>\s(\d+)s/)?.[1] : 0,
         }))
     )
+    .catch((err) => {
+      console.log(err)
+    })
+}
+
+async function _getClassJob(id) {
+  return axios
+    .get(_url(['ClassJob', id]))
+    .then((response) => ({
+      id: response.data.ID,
+      icon: response.data.Icon,
+      displayName: Utils.capitalize(response.data.Name_en),
+      shortName: response.data.Abbreviation_en,
+      role: response.data.Role,
+    }))
     .catch((err) => {
       console.log(err)
     })
@@ -44,6 +59,8 @@ export function get(type, id) {
   switch (type) {
     case 'action':
       return Promise.resolve(true).then(() => _getAction(id))
+    case 'ClassJob':
+      return Promise.resolve(true).then(() => _getClassJob(id))
     default:
       return null
   }

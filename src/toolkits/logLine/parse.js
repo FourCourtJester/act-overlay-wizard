@@ -52,6 +52,7 @@ function addCombatant(line) {
   ] = line
 
   return {
+    event: 'AddCombatant',
     ts,
     actorID,
     actorName,
@@ -79,7 +80,7 @@ function addCombatant(line) {
  */
 function removeCombatant(line) {
   const [, ts, actorID, actorName, actorJob, actorLevel, ownerID, ownerWorldID, ownerWorldName, ..._] = line
-  return { ts, actorID, actorName, actorJob, actorLevel, ownerID, ownerWorldID, ownerWorldName }
+  return { event: 'RemoveCombatant', ts, actorID, actorName, actorJob, actorLevel, ownerID, ownerWorldID, ownerWorldName }
 }
 
 /**
@@ -101,50 +102,50 @@ function partyChange(line) {
  * @returns {Object}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-12-0x0c-playerstats
  */
-function playerStatChange(line) {
-  const [
-    ,
-    ts,
-    actorJob,
-    strength,
-    dexterity,
-    vitality,
-    intelligence,
-    mind,
-    piety,
-    attackPower,
-    directHit,
-    criticalHit,
-    magicPotency,
-    healingPotency,
-    determination,
-    skillSpeed,
-    spellSpeed,
-    ,
-    tenacity,
-    ..._
-  ] = line
+// function playerStatChange(line) {
+//   const [
+//     ,
+//     ts,
+//     actorJob,
+//     strength,
+//     dexterity,
+//     vitality,
+//     intelligence,
+//     mind,
+//     piety,
+//     attackPower,
+//     directHit,
+//     criticalHit,
+//     magicPotency,
+//     healingPotency,
+//     determination,
+//     skillSpeed,
+//     spellSpeed,
+//     ,
+//     tenacity,
+//     ..._
+//   ] = line
 
-  return {
-    ts,
-    actorJob,
-    strength,
-    dexterity,
-    vitality,
-    intelligence,
-    mind,
-    piety,
-    attackPower,
-    directHit,
-    criticalHit,
-    magicPotency,
-    healingPotency,
-    determination,
-    skillSpeed,
-    spellSpeed,
-    tenacity,
-  }
-}
+//   return {
+//     ts,
+//     actorJob,
+//     strength,
+//     dexterity,
+//     vitality,
+//     intelligence,
+//     mind,
+//     piety,
+//     attackPower,
+//     directHit,
+//     criticalHit,
+//     magicPotency,
+//     healingPotency,
+//     determination,
+//     skillSpeed,
+//     spellSpeed,
+//     tenacity,
+//   }
+// }
 
 /**
  * Action Casting

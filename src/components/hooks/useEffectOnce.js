@@ -1,4 +1,4 @@
-// Import React and Components
+// Import core components
 import { useEffect, useRef } from 'react'
 
 /**

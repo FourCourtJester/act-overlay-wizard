@@ -6,6 +6,7 @@ import * as Storage from 'toolkits/storage'
 
 import combatantReducer from './slices/combatant'
 import combatLogReducer from './slices/combatLog'
+import jobReducer from './slices/job'
 import versionReducer from './slices/version'
 
 const initialState = {}
@@ -14,6 +15,7 @@ const store = configureStore({
   reducer: {
     combatant: combatantReducer,
     combatLog: combatLogReducer,
+    job: jobReducer,
     version: versionReducer,
   },
 })

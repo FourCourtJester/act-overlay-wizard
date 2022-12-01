@@ -1,5 +1,5 @@
 // Import our components
-import { parse } from 'toolkits/logLine'
+import { assignEntities, parse } from 'toolkits/logLine'
 import * as Utils from 'toolkits/utils'
 
 /**
@@ -8,12 +8,12 @@ import * as Utils from 'toolkits/utils'
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-01-0x01-changezone
  */
-function changeZone(line) {
-  const obj = parse(line)
+// function changeZone(line) {
+//   const obj = parse(line)
 
-  // console.log('ChangeZone', ts, zoneID, zoneName)
-  return `Zone changes to ${obj.zoneName}`
-}
+//   // console.log('ChangeZone', ts, zoneID, zoneName)
+//   return `Zone changes to ${obj.zoneName}`
+// }
 
 /**
  * Change Player
@@ -21,12 +21,12 @@ function changeZone(line) {
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-02-0x02-changeprimaryplayer
  */
-function changePlayer(line) {
-  const obj = parse(line)
+// function changePlayer(line) {
+//   const obj = parse(line)
 
-  // console.log('ChangePlayer', ts, actorID, actorName)
-  return `Player changes to ${obj.actorName}`
-}
+//   // console.log('ChangePlayer', ts, actorID, actorName)
+//   return `Player changes to @actorName@`
+// }
 
 /**
  * Add Combatant
@@ -56,7 +56,7 @@ function addCombatant(line) {
   //   actorZ,
   //   actorFacing
   // )
-  return `${obj.actorName} has been seen somewhere nearby`
+  return assignEntities(obj, `@actorName@ has appeared somewhere nearby`)
 }
 
 /**
@@ -69,7 +69,7 @@ function removeCombatant(line) {
   const obj = parse(line)
 
   // console.log('RemoveCombatant', ts, actorID, actorName, actorJob, actorLevel, ownerID, ownerWorldID, ownerWorldName)
-  return `${obj.actorName} has disappeared`
+  return assignEntities(obj, `@actorName@ has disappeared`)
 }
 
 /**
@@ -78,12 +78,12 @@ function removeCombatant(line) {
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-11-0x0b-partylist
  */
-function partyChange(line) {
-  const obj = parse(line)
+// function partyChange(line) {
+//   const obj = parse(line)
 
-  // console.log('PartyChange', ts, partySize, ...partyIDs)
-  return `Party changes to ${obj.partySize} members`
-}
+//   // console.log('PartyChange', ts, partySize, ...partyIDs)
+//   return `Party changes to ${obj.partySize} members`
+// }
 
 /**
  * Player Stat Change
@@ -91,31 +91,31 @@ function partyChange(line) {
  * @returns {String}
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-12-0x0c-playerstats
  */
-function playerStatChange(line) {
-  const obj = parse(line)
+// function playerStatChange(line) {
+//   const obj = parse(line)
 
-  // console.log(
-  //   'StatChanged',
-  //   ts,
-  //   actorJob,
-  //   strength,
-  //   dexterity,
-  //   vitality,
-  //   intelligence,
-  //   mind,
-  //   piety,
-  //   attackPower,
-  //   directHit,
-  //   criticalHit,
-  //   magicPotency,
-  //   healingPotency,
-  //   determination,
-  //   skillSpeed,
-  //   spellSpeed,
-  //   tenacity
-  // )
-  return `Player stats change`
-}
+//   // console.log(
+//   //   'StatChanged',
+//   //   ts,
+//   //   actorJob,
+//   //   strength,
+//   //   dexterity,
+//   //   vitality,
+//   //   intelligence,
+//   //   mind,
+//   //   piety,
+//   //   attackPower,
+//   //   directHit,
+//   //   criticalHit,
+//   //   magicPotency,
+//   //   healingPotency,
+//   //   determination,
+//   //   skillSpeed,
+//   //   spellSpeed,
+//   //   tenacity
+//   // )
+//   return `Player stats change`
+// }
 
 /**
  * Action Casting
@@ -126,12 +126,16 @@ function playerStatChange(line) {
 function actionCasting(line) {
   const obj = parse(line)
   const selfCasted = obj.targetID === obj.actorID
-  const castTime = Number(obj.castTime).toFixed(1)
 
   // console.log('ActionCasting', ts, actorID, actorName, actionID, actionName, targetID, targetName, castTime, actorX, actorY, actorZ, actorFacing)
-  return selfCasted
-    ? `${obj.actorName} begins to cast ${Utils.capitalize(obj.actionName)} (${castTime} seconds)`
-    : `${obj.actorName} begins to cast ${Utils.capitalize(obj.actionName)} on ${obj.targetName} (${castTime} seconds)`
+  obj.castTime = Number(obj.castTime).toFixed(1)
+  obj.actionName = Utils.capitalize(obj.actionName)
+
+  const message = selfCasted
+    ? `@actorName@ begins to cast @actionName@ (@castTime@ seconds)`
+    : `@actorName@ begins to cast @actionName@ on @targetName@ (@castTime@ seconds)`
+
+  return assignEntities(obj, message)
 }
 
 /**
@@ -173,9 +177,8 @@ function actionCasted(line) {
   //   actorZ,
   //   actorFacing
   // )
-  return selfCasted
-    ? `${obj.actorName} casts ${Utils.capitalize(obj.actionName)} on themselves`
-    : `${obj.actorName} casts ${Utils.capitalize(obj.actionName)} on ${obj.targetName}`
+  const message = selfCasted ? `@actorName@ casts @actionName@ on themselves` : `@actorName@ casts @actionName@ on @targetName@`
+  return assignEntities(obj, message)
 }
 
 /**
@@ -188,7 +191,8 @@ function actionCancelled(line) {
   const obj = parse(line)
 
   // console.log('ActionCancelled', ts, actorID, actorName, actionID, actionName, reason)
-  return `${obj.actorName} has ${Utils.capitalize(obj.actionName)} ${obj.reason.toLowerCase()}`
+  obj.reason = obj.reason.toLowerCase()
+  return assignEntities(obj, `@actorName@ has @actionName@ @reason@`)
 }
 
 /**
@@ -199,8 +203,6 @@ function actionCancelled(line) {
  */
 function dotTick(line) {
   const obj = parse(line)
-  const action = obj.effectType === 'HoT' ? 'regains' : 'suffers'
-  const stat = obj.effectType === 'HoT' ? 'health' : 'damage'
 
   // console.log(
   //   effectType,
@@ -219,7 +221,11 @@ function dotTick(line) {
   //   actorZ,
   //   actorFacing
   // )
-  return `${obj.actorName} ${action} ${Utils.h2d(obj.effectResult)} ${stat}`
+  obj.action = obj.effectType === 'HoT' ? 'regains' : 'suffers'
+  obj.stat = obj.effectType === 'HoT' ? 'health' : 'damage'
+  obj.effectResult = Utils.h2d(obj.effectResult)
+
+  return assignEntities(obj, `@actorName@ @action@ @effectResult@ @stat@`)
 }
 
 /**
@@ -232,7 +238,7 @@ function death(line) {
   const obj = parse(line)
 
   // console.log('Death', ts, actorID, actorName, sourceID, sourceName)
-  return `${obj.actorName} dies`
+  return assignEntities(obj, `@actorName@ dies`)
 }
 
 /**
@@ -244,12 +250,15 @@ function death(line) {
 function gainEffect(line) {
   const obj = parse(line)
   const selfCasted = obj.sourceID === obj.actorID
-  const effectDuration = Math.round(Number(obj.effectDuration)).toFixed(1)
 
   // console.log('GainEffect', ts, effectID, effectName, effectDuration, sourceID, sourceName, actorID, actorName, actorMaxHP, sourceMaxHP)
-  return selfCasted
-    ? `${obj.actorName} gains the effect of ${obj.effectName} for ${effectDuration} seconds`
-    : `${obj.actorName} gains the effect of ${obj.effectName} for ${effectDuration} seconds from ${obj.sourceName}`
+  obj.effectDuration = Math.round(Number(obj.effectDuration)).toFixed(1)
+
+  const message = selfCasted
+    ? `@actorName@ gains the effect of @effectName@ for @effectDuration@ seconds`
+    : `@actorName@ gains the effect of @effectName@ for @effectDuration@ seconds from @sourceName@`
+
+  return assignEntities(obj, message)
 }
 
 /**
@@ -262,7 +271,7 @@ function gainMarker(line) {
   const obj = parse(line)
 
   // console.log('GainMarker', ts, actorID, actorName, iconField1, iconField2, iconID)
-  return `${obj.actorName} gains the marker ${obj.iconID}`
+  return assignEntities(obj, `@actorName@ gains the marker @iconID@`)
 }
 
 /**
@@ -276,7 +285,8 @@ function loseEffect(line) {
   const selfCasted = obj.sourceID === obj.actorID
 
   // console.log('LoseEffect', ts, effectID, effectName, sourceID, sourceName, actorID, actorName)
-  return selfCasted ? `${obj.actorName} loses the effect of ${obj.effectName}` : `${obj.actorName} loses the effect of ${obj.effectName} from ${obj.sourceName}`
+  const message = selfCasted ? `@actorName@ loses the effect of @effectName@` : `@actorName@ loses the effect of @effectName@ from @sourceName@`
+  return assignEntities(obj, message)
 }
 
 /**
@@ -289,7 +299,7 @@ function gameControl(line) {
   const obj = parse(line)
 
   // console.log('GameControl', ts, instanceID, commandID, ...data)
-  return 'GameControl occured'
+  return assignEntities(obj, 'GameControl occured')
 }
 
 /**
@@ -302,7 +312,7 @@ function gainTether(line) {
   const obj = parse(line)
 
   // console.log('GainTether', ts, sourceID, sourceName, actorID, actorName, tetherID)
-  return `${obj.actorName} gains the tether ${obj.tetherID} from ${obj.sourceName}`
+  return assignEntities(obj, `@actorName@ gains the tether @tetherID@ from @sourceName@`)
 }
 
 export function format(line) {
@@ -310,14 +320,14 @@ export function format(line) {
 
   switch (event) {
     // Change Zone
-    case 1: {
-      return changeZone(line)
-    }
+    // case 1: {
+    //   return changeZone(line)
+    // }
 
     // Change Character
-    case 2: {
-      return changePlayer(line)
-    }
+    // case 2: {
+    //   return changePlayer(line)
+    // }
 
     // Add a Combatant
     case 3: {
@@ -330,9 +340,9 @@ export function format(line) {
     }
 
     // Party Change
-    case 11: {
-      return partyChange(line)
-    }
+    // case 11: {
+    //   return partyChange(line)
+    // }
 
     // Player Stat Change
     // case 12: {
@@ -393,6 +403,9 @@ export function format(line) {
 
     // Uninteresting LogLines
     // 00 - Chat Message
+    // 01 - Change Zone
+    // 02 - Change Character
+    // 11 - Party Change
     // 12 - Stat Change
     // 28 - Waymark
     // 29 - Sign
@@ -405,6 +418,9 @@ export function format(line) {
     // 39 - Batched HP Update
     // 41 - System Message
     case 0:
+    case 1:
+    case 2:
+    case 11:
     case 12:
     case 28:
     case 29:

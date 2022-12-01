@@ -6,10 +6,11 @@ import { nanoid } from 'nanoid'
 
 // Import our components
 import { WebSocket } from 'contexts'
-import { addCombatLogEntry, selectCombatLogEntry, updateCombatLogEntry } from 'db/slices/combatLog'
-import { addCombatantEntry, removeCombatantEntry } from 'db/slices/combatant'
+import { useEffectOnce } from 'components/hooks'
+import { CombatLogEntry } from 'components/combatLog'
+import { addCombatLog, selectCombatLog, updateCombatLog } from 'db/slices/combatLog'
+import { addCombatant, removeCombatant } from 'db/slices/combatant'
 import { format, parse } from 'toolkits/logLine'
-import { useEffectOnce, useObjectEffect } from 'components/hooks'
 
 // Import style
 // ...
@@ -27,7 +28,7 @@ function CombatLog() {
   // Hooks
   const dispatch = useDispatch()
   // Redux
-  const combatLog = useSelector((state) => selectCombatLogEntry(state, combatLogID.current))
+  const combatLog = useSelector((state) => selectCombatLog(state, combatLogID.current))
   // Refs
   const $log = useRef(null)
   const $scroll = useRef(null)
@@ -59,7 +60,7 @@ function CombatLog() {
     ws.on('LogLine', {
       CombatLog: {
         success: ({ line }) => {
-          dispatch(updateCombatLogEntry({ id: combatLogID.current, entry: format(line) }))
+          dispatch(updateCombatLog({ id: combatLogID.current, entry: format(line) }))
         },
       },
     })
@@ -69,12 +70,12 @@ function CombatLog() {
         success: ({ line }) => {
           switch (+line[0]) {
             case 3: {
-              dispatch(addCombatantEntry(parse(line)))
+              dispatch(addCombatant(parse(line)))
               break
             }
 
             case 4: {
-              dispatch(removeCombatantEntry(parse(line)))
+              dispatch(removeCombatant(parse(line)))
               break
             }
 
@@ -99,7 +100,7 @@ function CombatLog() {
   // }, [combatLog])
 
   useEffectOnce(() => {
-    dispatch(addCombatLogEntry(combatLogID.current))
+    dispatch(addCombatLog(combatLogID.current))
   })
 
   return (
@@ -110,7 +111,7 @@ function CombatLog() {
           <hr className="mx-0 mt-2 mb-0" />
           <div ref={$scroll} className="scrollbar">
             <ViewportList initialAlignToTop={false} overflowAnchor="none" items={combatLog} ref={$log} viewportRef={$scroll}>
-              {(entry, i) => <div key={i}>{entry}</div>}
+              {(entry, i) => <CombatLogEntry key={i} entry={entry} />}
             </ViewportList>
             <div id="anchor" />
           </div>

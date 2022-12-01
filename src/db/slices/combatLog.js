@@ -33,21 +33,23 @@ export const combatLog = createSlice({
   reducers: {
     add: (state, action) => {
       // console.log('Create Combat Log: ', action.payload)
-      Utils.setObjValue(state.entries, action.payload, [])
+      Utils.setObjValue(state, action.payload, [])
     },
     update: (state, action) => {
-      const log = Utils.getObjValue(state.entries, action.payload?.id)
-      if (log && action.payload?.entry) log.push(action.payload.entry)
+      const log = Utils.getObjValue(state, action.payload?.id)
+      if (log && action.payload?.entry) {
+        log.push(action.payload.entry)
+      }
     },
   },
 })
 
 // Reducer functions
-export const { add: addCombatLogEntry, update: updateCombatLogEntry } = combatLog.actions
+export const { add: addCombatLog, update: updateCombatLog } = combatLog.actions
 
 // Selector functions
-export const selectCombatLogEntry = (state, id) =>
+export const selectCombatLog = (state, id) =>
   // console.log(state, id)
-  Utils.getObjValue(state.combatLog.entries, id) || []
+  Utils.getObjValue(state.combatLog, id) || []
 
 export default combatLog.reducer

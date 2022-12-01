@@ -108,6 +108,10 @@ var {
 }
 
 #combat-log {
+  .job-icon {
+    height: 1.25rem;
+  }
+
   .scrollbar {
     * {
       overflow-anchor: none;
