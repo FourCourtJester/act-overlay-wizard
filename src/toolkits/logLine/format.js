@@ -12,23 +12,23 @@ function _f(field, obj) {
     }
 
     // Actions
-    case 'actionName': {
-      break
+    case 'actionID': {
+      return `@action|${obj[field]}@`
     }
 
     // Effects
-    case 'effectName': {
-      break
+    case 'effectID': {
+      return `@effect|${obj[field]}@`
     }
 
     // Markers
-    case 'iconID': {
-      break
+    case 'markerID': {
+      return `@marker|${obj[field]}@`
     }
 
     // Tethers
     case 'tetherID': {
-      break
+      return `@tether|${obj[field]}@`
     }
 
     default: {
@@ -41,12 +41,12 @@ function _f(field, obj) {
 
 /**
  * Change Zone
- * @param {Array} line
+ * @param {Array} entry
  * @returns {String}
- * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-01-0x01-changezone
+ * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#entry-01-0x01-changezone
  */
-// function changeZone(line) {
-//   const obj = parse(line)
+// function changeZone(obj) {
+//
 
 //   // console.log('ChangeZone', ts, zoneID, zoneName)
 //   return `Zone changes to ${obj.zoneName}`
@@ -54,12 +54,12 @@ function _f(field, obj) {
 
 /**
  * Change Player
- * @param {Array} line
+ * @param {Array} entry
  * @returns {String}
- * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-02-0x02-changeprimaryplayer
+ * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#entry-02-0x02-changeprimaryplayer
  */
-// function changePlayer(line) {
-//   const obj = parse(line)
+// function changePlayer(obj) {
+//
 
 //   // console.log('ChangePlayer', ts, actorID, actorName)
 //   return `Player changes to ${_f('actorID', obj)}`
@@ -67,13 +67,11 @@ function _f(field, obj) {
 
 /**
  * Add Combatant
- * @param {Array} line
+ * @param {Array} entry
  * @returns {String}
- * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-03-0x03-addcombatant
+ * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#entry-03-0x03-addcombatant
  */
-function addCombatant(line) {
-  const obj = parse(line)
-
+function addCombatant(obj) {
   // console.log(
   //   'AddCombatant',
   //   ts,
@@ -98,25 +96,23 @@ function addCombatant(line) {
 
 /**
  * Remove Combatant
- * @param {Array} line
+ * @param {Array} entry
  * @returns {String}
- * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-04-0x04-removecombatant
+ * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#entry-04-0x04-removecombatant
  */
-function removeCombatant(line) {
-  const obj = parse(line)
-
+function removeCombatant(obj) {
   // console.log('RemoveCombatant', ts, actorID, actorName, actorJob, actorLevel, ownerID, ownerWorldID, ownerWorldName)
   return `${_f('actorID', obj)} has disappeared`
 }
 
 /**
  * Party Change
- * @param {Array} line
+ * @param {Array} entry
  * @returns {String}
- * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-11-0x0b-partylist
+ * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#entry-11-0x0b-partylist
  */
-// function partyChange(line) {
-//   const obj = parse(line)
+// function partyChange(obj) {
+//
 
 //   // console.log('PartyChange', ts, partySize, ...partyIDs)
 //   return `Party changes to ${obj.partySize} members`
@@ -124,12 +120,12 @@ function removeCombatant(line) {
 
 /**
  * Player Stat Change
- * @param {Array} line
+ * @param {Array} entry
  * @returns {String}
- * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-12-0x0c-playerstats
+ * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#entry-12-0x0c-playerstats
  */
-// function playerStatChange(line) {
-//   const obj = parse(line)
+// function playerStatChange(obj) {
+//
 
 //   // console.log(
 //   //   'StatChanged',
@@ -156,12 +152,11 @@ function removeCombatant(line) {
 
 /**
  * Action Casting
- * @param {Array} line
+ * @param {Array} entry
  * @returns {String}
- * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-20-0x14-networkstartscasting
+ * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#entry-20-0x14-networkstartscasting
  */
-function actionCasting(line) {
-  const obj = parse(line)
+function actionCasting(obj) {
   const selfCasted = obj.targetID === obj.actorID
 
   // console.log('ActionCasting', ts, actorID, actorName, actionID, actionName, targetID, targetName, castTime, actorX, actorY, actorZ, actorFacing)
@@ -175,12 +170,11 @@ function actionCasting(line) {
 
 /**
  * Action Castied
- * @param {Array} line
+ * @param {Array} entry
  * @returns {String}
- * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-21-0x15-networkability
+ * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#entry-21-0x15-networkability
  */
-function actionCasted(line) {
-  const obj = parse(line)
+function actionCasted(obj) {
   const selfCasted = obj.targetID === obj.actorID
 
   // console.log(
@@ -219,13 +213,11 @@ function actionCasted(line) {
 
 /**
  * Action Cancelled
- * @param {Array} line
+ * @param {Array} entry
  * @returns {String}
- * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-23-0x17-networkcancelability
+ * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#entry-23-0x17-networkcancelability
  */
-function actionCancelled(line) {
-  const obj = parse(line)
-
+function actionCancelled(obj) {
   // console.log('ActionCancelled', ts, actorID, actorName, actionID, actionName, reason)
   obj.reason = obj.reason.toLowerCase()
   return `${_f('actorID', obj)} has ${_f('actionID', obj)} ${_f('reason', obj)}`
@@ -233,13 +225,11 @@ function actionCancelled(line) {
 
 /**
  * HoT or DoT Tick
- * @param {Array} line
+ * @param {Array} entry
  * @returns {String}
- * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-24-0x18-networkdot
+ * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#entry-24-0x18-networkdot
  */
-function dotTick(line) {
-  const obj = parse(line)
-
+function dotTick(obj) {
   // console.log(
   //   effectType,
   //   ts,
@@ -266,25 +256,22 @@ function dotTick(line) {
 
 /**
  * Death
- * @param {Array} line
+ * @param {Array} entry
  * @returns {String}
- * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-25-0x19-networkdeath
+ * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#entry-25-0x19-networkdeath
  */
-function death(line) {
-  const obj = parse(line)
-
+function death(obj) {
   // console.log('Death', ts, actorID, actorName, sourceID, sourceName)
   return `${_f('actorID', obj)} dies`
 }
 
 /**
  * Gains Effect
- * @param {Array} line
+ * @param {Array} entry
  * @returns {String}
- * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-26-0x1a-networkbuff
+ * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#entry-26-0x1a-networkbuff
  */
-function gainEffect(line) {
-  const obj = parse(line)
+function gainEffect(obj) {
   const selfCasted = obj.sourceID === obj.actorID
 
   // console.log('GainEffect', ts, effectID, effectName, effectDuration, sourceID, sourceName, actorID, actorName, actorMaxHP, sourceMaxHP)
@@ -297,25 +284,22 @@ function gainEffect(line) {
 
 /**
  * Gains Marker
- * @param {Array} line
+ * @param {Array} entry
  * @returns {String}
- * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-26-0x1a-networkbuff
+ * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#entry-26-0x1a-networkbuff
  */
-function gainMarker(line) {
-  const obj = parse(line)
-
+function gainMarker(obj) {
   // console.log('GainMarker', ts, actorID, actorName, iconField1, iconField2, iconID)
   return `${_f('actorID', obj)} gains the marker ${_f('iconID', obj)}`
 }
 
 /**
  * Lose Effect
- * @param {Array} line
+ * @param {Array} entry
  * @returns {String}
- * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-30-0x1e-networkbuffremove
+ * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#entry-30-0x1e-networkbuffremove
  */
-function loseEffect(line) {
-  const obj = parse(line)
+function loseEffect(obj) {
   const selfCasted = obj.sourceID === obj.actorID
 
   // console.log('LoseEffect', ts, effectID, effectName, sourceID, sourceName, actorID, actorName)
@@ -326,114 +310,110 @@ function loseEffect(line) {
 
 /**
  * Game Control
- * @param {Array} line
+ * @param {Array} entry
  * @returns {String}
- * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-33-0x21-network6d-actor-control
+ * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#entry-33-0x21-network6d-actor-control
  */
-function gameControl(line) {
-  const obj = parse(line)
-
+function gameControl(obj) {
   // console.log('GameControl', ts, instanceID, commandID, ...data)
   return 'GameControl occured'
 }
 
 /**
  * Gain Tether
- * @param {Array} line
+ * @param {Array} entry
  * @returns {String}
- * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-35-0x23-networktether
+ * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#entry-35-0x23-networktether
  */
-function gainTether(line) {
-  const obj = parse(line)
-
+function gainTether(obj) {
   // console.log('GainTether', ts, sourceID, sourceName, actorID, actorName, tetherID)
   return `${_f('actorID', obj)} gains the tether ${_f('tetherID', obj)} from ${_f('sourceID', obj)}`
 }
 
-export function format(line) {
-  const event = +line[0]
+export function format(entry) {
+  const { event } = entry
 
   switch (event) {
     // Change Zone
     // case 1: {
-    //   return changeZone(line)
+    //   return changeZone(entry)
     // }
 
     // Change Character
     // case 2: {
-    //   return changePlayer(line)
+    //   return changePlayer(entry)
     // }
 
     // Add a Combatant
     case 3: {
-      return addCombatant(line)
+      return addCombatant(entry)
     }
 
     // Remove Combatant
     case 4: {
-      return removeCombatant(line)
+      return removeCombatant(entry)
     }
 
     // Party Change
     // case 11: {
-    //   return partyChange(line)
+    //   return partyChange(entry)
     // }
 
     // Player Stat Change
     // case 12: {
-    //   return playerStatChange(line)
+    //   return playerStatChange(entry)
     // }
 
     // Action Is Casting
     case 20: {
-      return actionCasting(line)
+      return actionCasting(entry)
     }
 
     // Action
     // AoE Action
     case 21:
     case 22: {
-      return actionCasted(line)
+      return actionCasted(entry)
     }
 
     // Action was Cancelled
     case 23: {
-      return actionCancelled(line)
+      return actionCancelled(entry)
     }
 
     // HoT or DoT entry
     case 24: {
-      return dotTick(line)
+      return dotTick(entry)
     }
 
     // Death
     case 25: {
-      return death(line)
+      return death(entry)
     }
 
     // Buff or Debuff
     case 26: {
-      return gainEffect(line)
+      return gainEffect(entry)
     }
 
     // Marker
     case 27: {
-      return gainMarker(line)
+      return gainMarker(entry)
     }
 
     // Buff or Debuff removal
     case 30: {
-      return loseEffect(line)
+      return loseEffect(entry)
     }
 
     // Game Control
     case 33: {
-      return gameControl(line)
+      return gameControl(entry)
     }
 
     // Tether
     case 35: {
-      return gainTether(line)
+      return gainTether(entry)
     }
 
     // Uninteresting LogLines

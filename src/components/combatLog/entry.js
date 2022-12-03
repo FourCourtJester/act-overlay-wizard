@@ -8,7 +8,6 @@ import store from 'db/store'
 
 // Import our components
 import * as Utils from 'toolkits/utils'
-import { url } from 'toolkits/xivapi'
 
 function format(entry) {
   const state = store.getState()
@@ -19,6 +18,22 @@ function format(entry) {
     const [field, ...ids] = part.split('|')
 
     switch (field) {
+      case 'action': {
+        const action = state[field]?.[ids[0]]
+        const img = action?.icon
+
+        return (
+          <>
+            {img && (
+              <OverlayTrigger placement="right" overlay={<Tooltip id="tooltip-job">{action?.displayName}</Tooltip>}>
+                <img className="job-icon" src={action.icon} />
+              </OverlayTrigger>
+            )}
+            <span>{action?.displayName}</span>
+          </>
+        )
+      }
+
       case 'combatant': {
         const combatant = state[field]?.[ids[0]]
         const job = state.job[combatant?.actorJob]
@@ -28,10 +43,36 @@ function format(entry) {
           <>
             {img && (
               <OverlayTrigger placement="top" overlay={<Tooltip id="tooltip-job">{job?.displayName}</Tooltip>}>
-                <img className="job-icon" src={`${url}/${job?.icon}`} />
+                <img className="job-icon" src={job.icon} />
               </OverlayTrigger>
             )}
-            <span className={`text-${job?.shortName}`}>{combatant?.actorName}</span>
+            <span className={`text-${job?.code}`}>{combatant?.actorName}</span>
+          </>
+        )
+      }
+
+      case 'effect': {
+        const effect = state[field]?.[ids[0]]
+        const img = effect?.icon
+
+        return (
+          <>
+            {img && (
+              <OverlayTrigger
+                placement="right"
+                overlay={
+                  <Tooltip id="tooltip-job">
+                    <div className="text-left">
+                      <p className="font-weight-bold mb-0">{effect?.displayName}</p>
+                      <p className="mb-0">{effect?.description}</p>
+                    </div>
+                  </Tooltip>
+                }
+              >
+                <img className="job-icon" src={effect.icon} />
+              </OverlayTrigger>
+            )}
+            <span>{effect?.displayName}</span>
           </>
         )
       }

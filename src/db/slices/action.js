@@ -8,12 +8,8 @@ import * as Storage from 'toolkits/storage'
 import * as Utils from 'toolkits/utils'
 import * as XIVAPI from 'toolkits/xivapi'
 
-const name = 'job'
+const name = 'action'
 const initialState = {}
-
-function _getJob(state, id) {
-  return Utils.getObjValue(state.job, id)
-}
 
 function _getState() {
   try {
@@ -31,23 +27,29 @@ function _getState() {
   }
 }
 
-export const updateJob = createAsyncThunk(`${name}/update`, async (id, api) => {
+function _getAction(state, id) {
+  return Utils.getObjValue(state.action, id)
+}
+
+export const updateAction = createAsyncThunk(`${name}/update`, async (data, api) => {
+  if (!data || !data?.actionID) throw new Error()
+
   const state = api.getState()
-  const cachedJob = _getJob(state, id)
+  const cachedAction = _getAction(state, data?.actionID)
   const version = selectVersion(state)
 
   try {
-    // Valid existing job
-    if (cachedJob && cachedJob?.version === version) return cachedJob
+    // Valid existing action
+    if (cachedAction && cachedAction?.version === version) return cachedAction
 
-    const newJob = await XIVAPI.get('ClassJob', Utils.h2d(id))
+    const newAction = await XIVAPI.get('Action', Utils.h2d(data.actionID))
 
-    // Job ID isn't a registered player job
-    if (!newJob) throw new Error(null)
+    // Action ID isn't a registered player action
+    if (!newAction) throw new Error(null)
 
     return {
-      ...newJob,
-      id,
+      ...newAction,
+      id: data.actionID,
       version,
     }
   } catch (err) {
@@ -55,22 +57,22 @@ export const updateJob = createAsyncThunk(`${name}/update`, async (id, api) => {
   }
 })
 
-// Job Slice
-export const job = createSlice({
-  name: 'job',
+// Action Slice
+export const action = createSlice({
+  name: 'action',
   initialState: _getState(),
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(updateJob.fulfilled, (state, { payload }) => {
+    builder.addCase(updateAction.fulfilled, (state, { payload }) => {
       state[payload.id] = payload
     })
   },
 })
 
 // Reducer functions
-// export const { add: addJobEntry, remove: removeJobEntry } = job.actions
+// export const { add: addActionEntry, remove: removeActionEntry } = action.actions
 
 // Selector functions
-export const selectJob = (state, id) => _getJob(state, id)
+export const selectAction = (state, id) => _getAction(state, id)
 
-export default job.reducer
+export default action.reducer

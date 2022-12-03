@@ -5,8 +5,8 @@
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-01-0x01-changezone
  */
 function changeZone(line) {
-  const [, ts, zoneID, zoneName, ..._] = line
-  return { ts, zoneID, zoneName }
+  const [event, ts, zoneID, zoneName, ..._] = line
+  return { event: +event, ts, zoneID, zoneName }
 }
 
 /**
@@ -16,8 +16,8 @@ function changeZone(line) {
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-02-0x02-changeprimaryplayer
  */
 function changePlayer(line) {
-  const [, ts, actorID, actorName, ..._] = line
-  return { ts, actorID, actorName }
+  const [event, ts, actorID, actorName, ..._] = line
+  return { event: +event, ts, actorID, actorName }
 }
 
 /**
@@ -28,7 +28,7 @@ function changePlayer(line) {
  */
 function addCombatant(line) {
   const [
-    ,
+    event,
     ts,
     actorID,
     actorName,
@@ -52,6 +52,10 @@ function addCombatant(line) {
   ] = line
 
   return {
+    _entities: {
+      actors: ['actor.ID', 'actor.Name', 'actor.Job', 'actor.Level'],
+    },
+    event: +event,
     ts,
     actorID,
     actorName,
@@ -78,8 +82,21 @@ function addCombatant(line) {
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-04-0x04-removecombatant
  */
 function removeCombatant(line) {
-  const [, ts, actorID, actorName, actorJob, actorLevel, ownerID, ownerWorldID, ownerWorldName, ..._] = line
-  return { ts, actorID, actorName, actorJob, actorLevel, ownerID, ownerWorldID, ownerWorldName }
+  const [event, ts, actorID, actorName, actorJob, actorLevel, ownerID, ownerWorldID, ownerWorldName, ..._] = line
+  return {
+    __entities: {
+      actors: ['actor.ID', 'actor.Name', 'actor.Job', 'actor.Level'],
+    },
+    event: +event,
+    ts,
+    actorID,
+    actorName,
+    actorJob,
+    actorLevel,
+    ownerID,
+    ownerWorldID,
+    ownerWorldName,
+  }
 }
 
 /**
@@ -89,10 +106,10 @@ function removeCombatant(line) {
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-11-0x0b-partylist
  */
 function partyChange(line) {
-  const [, ts, partySize, ...rawPartyIDs] = line
+  const [event, ts, partySize, ...rawPartyIDs] = line
   const partyIDs = rawPartyIDs.slice(0, +partySize)
 
-  return { ts, party: partyIDs.filter((player) => player.startsWith('10')) }
+  return { event: +event, ts, party: partyIDs.filter((player) => player.startsWith('10')) }
 }
 
 /**
@@ -103,7 +120,7 @@ function partyChange(line) {
  */
 // function playerStatChange(line) {
 //   const [
-//     ,
+//     event,
 //     ts,
 //     actorJob,
 //     strength,
@@ -126,6 +143,7 @@ function partyChange(line) {
 //   ] = line
 
 //   return {
+//     event,
 //     ts,
 //     actorJob,
 //     strength,
@@ -153,9 +171,28 @@ function partyChange(line) {
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-20-0x14-networkstartscasting
  */
 function actionCasting(line) {
-  const [, ts, actorID, actorName, actionID, actionName, targetID, targetName, castTime, actorX, actorY, actorZ, actorFacing, ..._] = line
+  const [event, ts, actorID, actorName, actionID, actionName, targetID, targetName, castTime, actorX, actorY, actorZ, actorFacing, ..._] = line
 
-  return { ts, actorID, actorName, actionID, actionName, targetID, targetName, castTime, actorX, actorY, actorZ, actorFacing }
+  return {
+    _entities: {
+      actions: ['actionID', 'actionName'],
+      actors: ['actor.ID', 'actor.Name'],
+      targets: ['target.ID', 'target.Name'],
+    },
+    event: +event,
+    ts,
+    actorID,
+    actorName,
+    actionID,
+    actionName,
+    targetID,
+    targetName,
+    castTime,
+    actorX,
+    actorY,
+    actorZ,
+    actorFacing,
+  }
 }
 
 /**
@@ -165,7 +202,7 @@ function actionCasting(line) {
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-21-0x15-networkability
  */
 function actionCasted(line) {
-  const [, ts, actorID, actorName, actionID, actionName, targetID, targetName, resultFlags, result, ...rest] = line
+  const [event, ts, actorID, actorName, actionID, actionName, targetID, targetName, resultFlags, result, ...rest] = line
   const flags = rest.slice(0, 13)
   const [
     targetCurrentHP,
@@ -192,6 +229,12 @@ function actionCasted(line) {
   ] = rest.slice(14)
 
   return {
+    _entities: {
+      actions: ['actionID', 'actionName'],
+      actors: ['actor.ID', 'actor.Name'],
+      targets: ['target.ID', 'target.Name'],
+    },
+    event: +event,
     ts,
     actorID,
     actorName,
@@ -228,8 +271,20 @@ function actionCasted(line) {
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-23-0x17-networkcancelability
  */
 function actionCancelled(line) {
-  const [, ts, actorID, actorName, actionID, actionName, reason, ..._] = line
-  return { ts, actorID, actorName, actionID, actionName, reason }
+  const [event, ts, actorID, actorName, actionID, actionName, reason, ..._] = line
+  return {
+    _entities: {
+      actions: ['actionID', 'actionName'],
+      actors: ['actor.ID', 'actor.Name'],
+    },
+    event: +event,
+    ts,
+    actorID,
+    actorName,
+    actionID,
+    actionName,
+    reason,
+  }
 }
 
 /**
@@ -240,7 +295,7 @@ function actionCancelled(line) {
  */
 function dotTick(line) {
   const [
-    ,
+    event,
     ts,
     actorID,
     actorName,
@@ -261,6 +316,11 @@ function dotTick(line) {
   ] = line
 
   return {
+    _entities: {
+      actors: ['actor.ID', 'actor.Name'],
+      effects: ['effect.ID', 'effect.Name'],
+    },
+    event: +event,
     ts,
     actorID,
     actorName,
@@ -285,8 +345,19 @@ function dotTick(line) {
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-25-0x19-networkdeath
  */
 function death(line) {
-  const [, ts, actorID, actorName, sourceID, sourceName, ..._] = line
-  return { ts, actorID, actorName, sourceID, sourceName }
+  const [event, ts, actorID, actorName, sourceID, sourceName, ..._] = line
+  return {
+    _entities: {
+      actors: ['actor.ID', 'actor.Name'],
+      sources: ['source.ID', 'source.Name'],
+    },
+    event: +event,
+    ts,
+    actorID,
+    actorName,
+    sourceID,
+    sourceName,
+  }
 }
 
 /**
@@ -296,8 +367,25 @@ function death(line) {
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-26-0x1a-networkbuff
  */
 function gainEffect(line) {
-  const [, ts, effectID, effectName, effectDuration, sourceID, sourceName, actorID, actorName, , actorMaxHP, sourceMaxHP, ..._] = line
-  return { ts, effectID, effectName, effectDuration, sourceID, sourceName, actorID, actorName, actorMaxHP, sourceMaxHP }
+  const [event, ts, effectID, effectName, effectDuration, sourceID, sourceName, actorID, actorName, , actorMaxHP, sourceMaxHP, ..._] = line
+  return {
+    _entities: {
+      actors: ['actor.ID', 'actor.Name'],
+      effects: ['effect.ID', 'effect.Duration', 'effect.Name'],
+      sources: ['source.ID', 'source.Name'],
+    },
+    event: +event,
+    ts,
+    effectID,
+    effectName,
+    effectDuration,
+    sourceID,
+    sourceName,
+    actorID,
+    actorName,
+    actorMaxHP,
+    sourceMaxHP,
+  }
 }
 
 /**
@@ -307,8 +395,20 @@ function gainEffect(line) {
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-26-0x1a-networkbuff
  */
 function gainMarker(line) {
-  const [, ts, actorID, actorName, iconField1, iconField2, iconID, ..._] = line
-  return { ts, actorID, actorName, iconField1, iconField2, iconID }
+  const [event, ts, actorID, actorName, iconField1, iconField2, markerID, ..._] = line
+  return {
+    _entities: {
+      actors: ['actor.ID', 'actor.Name'],
+      markers: ['marker.ID'],
+    },
+    event: +event,
+    ts,
+    actorID,
+    actorName,
+    iconField1,
+    iconField2,
+    markerID,
+  }
 }
 
 /**
@@ -318,8 +418,22 @@ function gainMarker(line) {
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-30-0x1e-networkbuffremove
  */
 function loseEffect(line) {
-  const [, ts, effectID, effectName, , sourceID, sourceName, actorID, actorName, ..._] = line
-  return { ts, effectID, effectName, sourceID, sourceName, actorID, actorName }
+  const [event, ts, effectID, effectName, , sourceID, sourceName, actorID, actorName, ..._] = line
+  return {
+    _entities: {
+      actors: ['actor.ID', 'actor.Name'],
+      effects: ['effect.ID', 'effect.Name'],
+      sources: ['source.ID', 'source.Name'],
+    },
+    event: +event,
+    ts,
+    effectID,
+    effectName,
+    sourceID,
+    sourceName,
+    actorID,
+    actorName,
+  }
 }
 
 /**
@@ -329,10 +443,10 @@ function loseEffect(line) {
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-33-0x21-network6d-actor-control
  */
 function gameControl(line) {
-  const [, ts, instanceID, commandID, ...rawData] = line
+  const [event, ts, instanceID, commandID, ...rawData] = line
   const data = rawData.slice(0, 4)
 
-  return { ts, instanceID, commandID, data }
+  return { event: +event, ts, instanceID, commandID, data }
 }
 
 /**
@@ -342,8 +456,22 @@ function gameControl(line) {
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#line-35-0x23-networktether
  */
 function gainTether(line) {
-  const [, ts, sourceID, sourceName, actorID, actorName, , , tetherID, ..._] = line
-  return { ts, sourceID, sourceName, actorID, actorName, tetherID }
+  const [event, ts, sourceID, sourceName, actorID, actorName, , , tetherID, ..._] = line
+  return {
+    _entities: {
+      actions: ['actionID', 'actionName'],
+      actors: ['actor.ID', 'actor.Name'],
+      sources: ['source.ID', 'source.Name'],
+      tethers: ['tetherID'],
+    },
+    event: +event,
+    ts,
+    sourceID,
+    sourceName,
+    actorID,
+    actorName,
+    tetherID,
+  }
 }
 
 export function parse(line) {

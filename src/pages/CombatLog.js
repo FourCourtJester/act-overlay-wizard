@@ -58,30 +58,9 @@ function CombatLog() {
     })
 
     ws.on('LogLine', {
-      CombatLog: {
-        success: ({ line }) => {
-          dispatch(updateCombatLog({ id: combatLogID.current, entry: format(line) }))
-        },
-      },
-    })
-
-    ws.on('LogLine', {
       Combatant: {
         success: ({ line }) => {
-          switch (+line[0]) {
-            case 3: {
-              dispatch(addCombatant(parse(line)))
-              break
-            }
-
-            case 4: {
-              dispatch(removeCombatant(parse(line)))
-              break
-            }
-
-            default:
-              break
-          }
+          dispatch(updateCombatLog({ id: combatLogID.current, line }))
         },
       },
     })

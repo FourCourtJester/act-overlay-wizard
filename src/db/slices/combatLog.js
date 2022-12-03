@@ -1,16 +1,20 @@
 // Import core components
-import { createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 // Import our components
+import { format, parse } from 'toolkits/logLine'
+
 import * as Storage from 'toolkits/storage'
 import * as Utils from 'toolkits/utils'
 
-const name = 'combatLog'
-const initialState = {
-  entries: {},
-}
+import { updateCombatant } from './combatant'
+import { updateAction } from './action'
+import { updateEffect } from './effect'
 
-function getState() {
+const name = 'combatLog'
+const initialState = {}
+
+function _getState() {
   try {
     const persistentState = Utils.getObjValue(Storage.get(`redux`), name) || {}
     const state = { ...initialState }
@@ -26,26 +30,67 @@ function getState() {
   }
 }
 
+function reduce(entry, keys, prefix = false) {
+  if (!keys || !keys.length) return false
+
+  return keys.reduce((obj, _key) => {
+    const splitKey = _key.split('.')
+    const key = prefix ? [prefix].concat(splitKey.slice(1)).join('') : splitKey.join('')
+
+    return {
+      ...obj,
+      [key]: entry[splitKey.join('')],
+    }
+  }, {})
+}
+
+export const updateCombatLog = createAsyncThunk(`${name}/update`, ({ id, line }, api) => {
+  const entry = parse(line)
+
+  try {
+    if (!Object.keys(entry).length) throw new Error()
+    if (!entry?._entities) throw new Error()
+
+    const { actions, actors, effects, marks, sources, targets, tethers } = entry._entities
+    const promises = []
+
+    // Actor entities
+    promises.push(api.dispatch(updateCombatant(reduce(entry, actors, 'actor'))))
+    promises.push(api.dispatch(updateCombatant(reduce(entry, sources, 'actor'))))
+    promises.push(api.dispatch(updateCombatant(reduce(entry, targets, 'actor'))))
+
+    // Action entities
+    promises.push(api.dispatch(updateAction(reduce(entry, actions))))
+
+    // Effect entities
+    promises.push(api.dispatch(updateEffect(reduce(entry, effects))))
+
+    return Promise.all(promises).then(() => ({ entry, id }))
+  } catch (err) {
+    return api.rejectWithValue(null)
+  }
+})
+
 // CombatLog Slice
 export const combatLog = createSlice({
   name: 'combatLog',
-  initialState: getState(),
+  initialState: _getState(),
   reducers: {
     add: (state, action) => {
       // console.log('Create Combat Log: ', action.payload)
       Utils.setObjValue(state, action.payload, [])
     },
-    update: (state, action) => {
+  },
+  extraReducers: (builder) => {
+    builder.addCase(updateCombatLog.fulfilled, (state, action) => {
       const log = Utils.getObjValue(state, action.payload?.id)
-      if (log && action.payload?.entry) {
-        log.push(action.payload.entry)
-      }
-    },
+      if (log) log.push(format(action.payload.entry))
+    })
   },
 })
 
 // Reducer functions
-export const { add: addCombatLog, update: updateCombatLog } = combatLog.actions
+export const { add: addCombatLog } = combatLog.actions
 
 // Selector functions
 export const selectCombatLog = (state, id) =>

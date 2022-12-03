@@ -31,10 +31,16 @@ function _getCombatant(state, id) {
   return Utils.getObjValue(state.combatant, id)
 }
 
-export const addCombatant = createAsyncThunk(`${name}/add`, async (actor, api) => {
+export const updateCombatant = createAsyncThunk(`${name}/update`, (actor, api) => {
   try {
-    await api.dispatch(updateJob(actor.actorJob))
-    return actor
+    if (!actor || !Object.keys(actor).length) throw new Error()
+
+    return actor?.actorJob
+      ? api
+          .dispatch(updateJob(actor.actorJob))
+          .unwrap()
+          .then(() => actor)
+      : actor
   } catch (err) {
     return api.rejectWithValue(null)
   }
@@ -50,8 +56,9 @@ export const combatant = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(addCombatant.fulfilled, (state, { payload }) => {
-      state[payload.actorID] = payload
+    builder.addCase(updateCombatant.fulfilled, (state, { payload }) => {
+      const actor = Utils.getObjValue(state, payload.actorID)
+      state[payload.actorID] = actor ? { ...actor, ...payload } : payload
     })
   },
 })
