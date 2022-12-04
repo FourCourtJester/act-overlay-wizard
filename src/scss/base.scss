@@ -107,7 +107,8 @@ var {
   height: 100.001vh !important;
 }
 
-#combat-log {
+#combat-log,
+.tooltip {
   .job-icon {
     height: 1.25rem;
   }

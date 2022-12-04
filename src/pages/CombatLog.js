@@ -9,8 +9,6 @@ import { WebSocket } from 'contexts'
 import { useEffectOnce } from 'components/hooks'
 import { CombatLogEntry } from 'components/combatLog'
 import { addCombatLog, selectCombatLog, updateCombatLog } from 'db/slices/combatLog'
-import { addCombatant, removeCombatant } from 'db/slices/combatant'
-import { format, parse } from 'toolkits/logLine'
 
 // Import style
 // ...
@@ -47,7 +45,7 @@ function CombatLog() {
               // 'CombatData',
               // "EnmityAggroList",
               // "EnmityTargetData",
-              // "GetCombatants",
+              // 'GetCombatants',
               'LogLine',
               // 'PartyChanged',
               // "SendCharName",

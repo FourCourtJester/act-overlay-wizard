@@ -1,6 +1,7 @@
 // Import core components
 import { useCallback } from 'react'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { OverlayTrigger, Popover, Tooltip } from 'react-bootstrap'
+import parse from 'html-react-parser'
 import store from 'db/store'
 
 // Import Styling
@@ -23,14 +24,23 @@ function format(entry) {
         const img = action?.icon
 
         return (
-          <>
-            {img && (
-              <OverlayTrigger placement="right" overlay={<Tooltip id="tooltip-job">{action?.displayName}</Tooltip>}>
-                <img className="job-icon" src={action.icon} />
-              </OverlayTrigger>
-            )}
-            <span>{action?.displayName}</span>
-          </>
+          <OverlayTrigger
+            placement="right"
+            overlay={
+              <Popover className="ffxiv-dialog p-1">
+                <div className="inner-dialog px-2 py-1">
+                  <div style={{ whiteSpace: 'pre-line' }}>{parse(action?.description ? action.description : action.displayName)}</div>
+                </div>
+              </Popover>
+            }
+          >
+            <span>
+              {img && <img className="job-icon me-1" src={action.icon} />}
+              <a className="text-decoration-underline text-light" href={`http://xivapi.com/Action/${Utils.h2d(action.id)}?pretty=1`} target={action.id}>
+                {action?.displayName}
+              </a>
+            </span>
+          </OverlayTrigger>
         )
       }
 
@@ -40,14 +50,19 @@ function format(entry) {
         const img = job?.icon
 
         return (
-          <>
-            {img && (
-              <OverlayTrigger placement="top" overlay={<Tooltip id="tooltip-job">{job?.displayName}</Tooltip>}>
-                <img className="job-icon" src={job.icon} />
-              </OverlayTrigger>
-            )}
-            <span className={`text-${job?.code}`}>{combatant?.actorName}</span>
-          </>
+          <OverlayTrigger
+            placement="top"
+            overlay={
+              <Tooltip>
+                Level {Utils.h2d(combatant?.actorLevel)} {job?.code}
+              </Tooltip>
+            }
+          >
+            <span>
+              {img && <img className="job-icon me-1" src={job.icon} />}
+              <span className={`text-${job?.code}`}>{combatant?.actorName}</span>
+            </span>
+          </OverlayTrigger>
         )
       }
 
@@ -56,24 +71,23 @@ function format(entry) {
         const img = effect?.icon
 
         return (
-          <>
-            {img && (
-              <OverlayTrigger
-                placement="right"
-                overlay={
-                  <Tooltip id="tooltip-job">
-                    <div className="text-left">
-                      <p className="font-weight-bold mb-0">{effect?.displayName}</p>
-                      <p className="mb-0">{effect?.description}</p>
-                    </div>
-                  </Tooltip>
-                }
-              >
-                <img className="job-icon" src={effect.icon} />
-              </OverlayTrigger>
-            )}
-            <span>{effect?.displayName}</span>
-          </>
+          <OverlayTrigger
+            placement="right"
+            overlay={
+              <Popover className="ffxiv-dialog p-1">
+                <div className="inner-dialog px-2 py-1">
+                  <div style={{ whiteSpace: 'pre-line' }}>{parse(effect?.description)}</div>
+                </div>
+              </Popover>
+            }
+          >
+            <span>
+              {img && <img className="job-icon me-1" src={effect.icon} />}
+              <a className="text-decoration-underline text-light" href={`http://xivapi.com/Status/${Utils.h2d(effect.id)}?pretty=1`} target={effect.id}>
+                {effect?.displayName}
+              </a>
+            </span>
+          </OverlayTrigger>
         )
       }
 

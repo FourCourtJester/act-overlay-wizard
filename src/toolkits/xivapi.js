@@ -23,8 +23,21 @@ function _jobPet() {
     id: 0,
     icon: '/pet.png',
     displayName: 'Summon',
-    shortName: 'PET',
+    code: 'PET',
     role: 0,
+  }
+}
+
+function _format(str) {
+  return str.replace(/(\n{3,})/gm, '\n\n')
+}
+
+function _nonAction(id) {
+  return {
+    id,
+    icon: `/potion.png`,
+    displayName: 'Item',
+    description: false,
   }
 }
 
@@ -34,14 +47,15 @@ async function _getAction(id) {
     .then((response) => ({
       id: response.data.ID,
       icon: `${_xivapi.url}${response.data.IconHD}`,
-      displayName: response.data.Name_en,
-      description: response.data.Description_en,
+      displayName: response.data.Name_en || 'Unknown Action',
+      description: _format(response.data.Description_en) || false,
       // jobs: response.data.ClassJobCategory.Name_en.split(' '),
       // recast: response.data.Recast100ms / 10,
       // duration: response.data.Description_en ? +response.data.Description_en.match(/Duration:<\/span>\s(\d+)s/)?.[1] : 0,
     }))
     .catch((err) => {
-      console.log(err)
+      console.error(err)
+      throw err
     })
 }
 
@@ -49,19 +63,18 @@ async function _getClassJob(id) {
   return axios
     .get(_url(['ClassJob', id]))
     .then((response) => {
-      if (id > 0)
-        return {
-          id: response.data.ID,
-          icon: `${_xivapi.url}${response.data.Icon}`,
-          displayName: Utils.capitalize(response.data.Name_en),
-          code: response.data.Abbreviation_en,
-          role: response.data.Role,
-        }
-
-      return _jobPet()
+      if (id === 0) return _jobPet()
+      return {
+        id: response.data.ID,
+        icon: `${_xivapi.url}${response.data.Icon}`,
+        displayName: Utils.capitalize(response.data.Name_en),
+        code: response.data.Abbreviation_en,
+        role: response.data.Role,
+      }
     })
     .catch((err) => {
-      console.log(err)
+      console.error(err)
+      throw err
     })
 }
 
@@ -71,14 +84,15 @@ async function _getEffect(id) {
     .then((response) => ({
       id: response.data.ID,
       icon: `${_xivapi.url}${response.data.IconHD}`,
-      displayName: response.data.Name_en,
-      description: response.data.Description_en,
+      displayName: response.data.Name_en || 'Unknown Effect',
+      description: _format(response.data.Description_en) || false,
       // jobs: response.data.ClassJobCategory.Name_en.split(' '),
       // recast: response.data.Recast100ms / 10,
       // duration: response.data.Description_en ? +response.data.Description_en.match(/Duration:<\/span>\s(\d+)s/)?.[1] : 0,
     }))
     .catch((err) => {
-      console.log(err)
+      console.error(err)
+      throw err
     })
 }
 
@@ -87,7 +101,9 @@ export const url = _xivapi.public
 export function get(type, id) {
   switch (type) {
     case 'Action':
-      return Promise.resolve(true).then(() => _getAction(id))
+      return Promise.resolve(true)
+        .then(() => _getAction(id))
+        .catch((err) => _nonAction(id))
     case 'ClassJob':
       return Promise.resolve(true).then(() => _getClassJob(id))
     case 'Effect':

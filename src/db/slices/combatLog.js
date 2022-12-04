@@ -51,11 +51,12 @@ export const updateCombatLog = createAsyncThunk(`${name}/update`, ({ id, line },
     if (!Object.keys(entry).length) throw new Error()
     if (!entry?._entities) throw new Error()
 
-    const { actions, actors, effects, marks, sources, targets, tethers } = entry._entities
+    const { actions, actors, effects, owners, marks, sources, targets, tethers } = entry._entities
     const promises = []
 
     // Actor entities
     promises.push(api.dispatch(updateCombatant(reduce(entry, actors, 'actor'))))
+    promises.push(api.dispatch(updateCombatant(reduce(entry, owners, 'actor'))))
     promises.push(api.dispatch(updateCombatant(reduce(entry, sources, 'actor'))))
     promises.push(api.dispatch(updateCombatant(reduce(entry, targets, 'actor'))))
 

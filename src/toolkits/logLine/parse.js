@@ -175,7 +175,7 @@ function actionCasting(line) {
 
   return {
     _entities: {
-      actions: ['actionID', 'actionName'],
+      actions: ['action.ID', 'action.Name'],
       actors: ['actor.ID', 'actor.Name'],
       targets: ['target.ID', 'target.Name'],
     },
@@ -230,7 +230,7 @@ function actionCasted(line) {
 
   return {
     _entities: {
-      actions: ['actionID', 'actionName'],
+      actions: ['action.ID', 'action.Name'],
       actors: ['actor.ID', 'actor.Name'],
       targets: ['target.ID', 'target.Name'],
     },
@@ -274,7 +274,7 @@ function actionCancelled(line) {
   const [event, ts, actorID, actorName, actionID, actionName, reason, ..._] = line
   return {
     _entities: {
-      actions: ['actionID', 'actionName'],
+      actions: ['action.ID', 'action.Name'],
       actors: ['actor.ID', 'actor.Name'],
     },
     event: +event,
@@ -459,7 +459,7 @@ function gainTether(line) {
   const [event, ts, sourceID, sourceName, actorID, actorName, , , tetherID, ..._] = line
   return {
     _entities: {
-      actions: ['actionID', 'actionName'],
+      actions: ['action.ID', 'action.Name'],
       actors: ['actor.ID', 'actor.Name'],
       sources: ['source.ID', 'source.Name'],
       tethers: ['tetherID'],
