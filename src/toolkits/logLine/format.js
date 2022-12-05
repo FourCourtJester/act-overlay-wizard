@@ -178,6 +178,7 @@ function actionCasting(obj) {
  */
 function actionCasted(obj) {
   const selfCasted = obj.targetID === obj.actorID
+  const isAction = !['item', 'unknown'].some((name) => obj?.actionName?.startsWith(name) || false)
 
   // console.log(
   //   'ActionCasted',
@@ -208,6 +209,8 @@ function actionCasted(obj) {
   //   actorZ,
   //   actorFacing
   // )
+  if (!isAction) return `${_f('actorID', obj)} uses ${_f('actionID', obj)}`
+
   return selfCasted
     ? `${_f('actorID', obj)} casts ${_f('actionID', obj)} on themselves`
     : `${_f('actorID', obj)} casts ${_f('actionID', obj)} on ${_f('targetID', obj)}`

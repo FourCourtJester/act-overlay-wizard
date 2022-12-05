@@ -18,9 +18,13 @@ function _url(str) {
   return `${[_xivapi.url, ...str].join('/')}?api_key=${_xivapi.key}`
 }
 
-function _jobPet() {
+function _format(str) {
+  return str.replace(/(\n{3,})/gm, '\n\n').replace(/<br \/>+/gm, '')
+}
+
+function _replaceJob(id) {
   return {
-    id: 0,
+    id,
     icon: '/pet.png',
     displayName: 'Summon',
     code: 'PET',
@@ -28,11 +32,19 @@ function _jobPet() {
   }
 }
 
-function _format(str) {
-  return str.replace(/(\n{3,})/gm, '\n\n')
+function _replaceIcon(id, icon) {
+  switch (id) {
+    case 3: {
+      return 'https://ffxiv.gamerescape.com/w/images/a/a8/Sprint_Icon.png'
+    }
+
+    default: {
+      return icon
+    }
+  }
 }
 
-function _nonAction(id) {
+function _replaceAction(id) {
   return {
     id,
     icon: `/potion.png`,
@@ -46,7 +58,7 @@ async function _getAction(id) {
     .get(_url(['Action', id]))
     .then((response) => ({
       id: response.data.ID,
-      icon: `${_xivapi.url}${response.data.IconHD}`,
+      icon: _replaceIcon(response.data.ID, `${_xivapi.url}${response.data.IconHD}`),
       displayName: response.data.Name_en || 'Unknown Action',
       description: _format(response.data.Description_en) || false,
       // jobs: response.data.ClassJobCategory.Name_en.split(' '),
@@ -63,7 +75,7 @@ async function _getClassJob(id) {
   return axios
     .get(_url(['ClassJob', id]))
     .then((response) => {
-      if (id === 0) return _jobPet()
+      if (id === 0) throw new Error()
       return {
         id: response.data.ID,
         icon: `${_xivapi.url}${response.data.Icon}`,
@@ -86,9 +98,6 @@ async function _getEffect(id) {
       icon: `${_xivapi.url}${response.data.IconHD}`,
       displayName: response.data.Name_en || 'Unknown Effect',
       description: _format(response.data.Description_en) || false,
-      // jobs: response.data.ClassJobCategory.Name_en.split(' '),
-      // recast: response.data.Recast100ms / 10,
-      // duration: response.data.Description_en ? +response.data.Description_en.match(/Duration:<\/span>\s(\d+)s/)?.[1] : 0,
     }))
     .catch((err) => {
       console.error(err)
@@ -103,9 +112,11 @@ export function get(type, id) {
     case 'Action':
       return Promise.resolve(true)
         .then(() => _getAction(id))
-        .catch((err) => _nonAction(id))
+        .catch((err) => _replaceAction(id))
     case 'ClassJob':
-      return Promise.resolve(true).then(() => _getClassJob(id))
+      return Promise.resolve(true)
+        .then(() => _getClassJob(id))
+        .catch((err) => _replaceJob(id))
     case 'Effect':
       return Promise.resolve(true).then(() => _getEffect(id))
     default:

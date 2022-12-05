@@ -21,7 +21,18 @@ function format(entry) {
     switch (field) {
       case 'action': {
         const action = state[field]?.[ids[0]]
+        const hasDescription = action?.description
         const img = action?.icon
+
+        if (!hasDescription)
+          return (
+            <span>
+              {img && <img className="job-icon me-1" src={action.icon} />}
+              <a className="text-decoration-underline text-light" href={`http://xivapi.com/Action/${Utils.h2d(action.id)}?pretty=1`} target={action.id}>
+                {action?.displayName}
+              </a>
+            </span>
+          )
 
         return (
           <OverlayTrigger
@@ -29,7 +40,7 @@ function format(entry) {
             overlay={
               <Popover className="ffxiv-dialog p-1">
                 <div className="inner-dialog px-2 py-1">
-                  <div style={{ whiteSpace: 'pre-line' }}>{parse(action?.description ? action.description : action.displayName)}</div>
+                  <div style={{ whiteSpace: 'pre-line' }}>{parse(action.description)}</div>
                 </div>
               </Popover>
             }
@@ -68,7 +79,18 @@ function format(entry) {
 
       case 'effect': {
         const effect = state[field]?.[ids[0]]
+        const hasDescription = effect?.description
         const img = effect?.icon
+
+        if (!hasDescription)
+          return (
+            <span>
+              {img && <img className="job-icon me-1" src={effect.icon} />}
+              <a className="text-decoration-underline text-light" href={`http://xivapi.com/Status/${Utils.h2d(effect.id)}?pretty=1`} target={effect.id}>
+                {effect?.displayName}
+              </a>
+            </span>
+          )
 
         return (
           <OverlayTrigger
@@ -76,7 +98,7 @@ function format(entry) {
             overlay={
               <Popover className="ffxiv-dialog p-1">
                 <div className="inner-dialog px-2 py-1">
-                  <div style={{ whiteSpace: 'pre-line' }}>{parse(effect?.description)}</div>
+                  <div style={{ whiteSpace: 'pre-line' }}>{parse(effect.description)}</div>
                 </div>
               </Popover>
             }
