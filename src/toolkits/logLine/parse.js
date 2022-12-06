@@ -1,3 +1,9 @@
+const monsterJob = 'FF'
+
+function _isMonster(obj) {
+  return obj.actorJob === '00' && obj.ownerID === '0000'
+}
+
 /**
  * Change Zone
  * @param {Array} line
@@ -59,7 +65,7 @@ function addCombatant(line) {
     ts,
     actorID,
     actorName,
-    actorJob,
+    actorJob: _isMonster({ actorJob, ownerID }) ? monsterJob : actorJob,
     actorLevel,
     ownerID,
     ownerWorldID,
@@ -91,7 +97,7 @@ function removeCombatant(line) {
     ts,
     actorID,
     actorName,
-    actorJob,
+    actorJob: _isMonster({ actorJob, ownerID }) ? monsterJob : actorJob,
     actorLevel,
     ownerID,
     ownerWorldID,

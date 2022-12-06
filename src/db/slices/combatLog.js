@@ -7,42 +7,62 @@ import { format, parse } from 'toolkits/logLine'
 import * as Storage from 'toolkits/storage'
 import * as Utils from 'toolkits/utils'
 
-import { updateCombatant } from './combatant'
+import { removeCombatants, updateCombatant } from './combatant'
 import { updateAction } from './action'
 import { updateEffect } from './effect'
 
 const name = 'combatLog'
 const initialState = {}
 
-function _getState() {
-  try {
-    const persistentState = Utils.getObjValue(Storage.get(`redux`), name) || {}
-    const state = { ...initialState }
+// function _getState() {
+//   try {
+//     const persistentState = Utils.getObjValue(Storage.get(`redux`), name) || {}
+//     const state = { ...initialState }
 
-    Utils.getObjPaths(persistentState, (key, val) => {
-      Utils.setObjValue(state, key, val)
-    })
+//     Utils.getObjPaths(persistentState, (key, val) => {
+//       Utils.setObjValue(state, key, val)
+//     })
 
-    return state
-  } catch (err) {
-    console.error(err)
-    return initialState
-  }
-}
+//     return state
+//   } catch (err) {
+//     console.error(err)
+//     return initialState
+//   }
+// }
 
 function reduce(entry, keys, prefix = false) {
   if (!keys || !keys.length) return false
 
   return keys.reduce((obj, _key) => {
-    const splitKey = _key.split('.')
-    const key = prefix ? [prefix].concat(splitKey.slice(1)).join('') : splitKey.join('')
+    const parts = _key.split('.')
+    const newKey = prefix ? [prefix].concat(parts.slice(1)).join('') : parts.join('')
+    const objKey = parts.join('')
 
+    // // This is a sub value request
+    // // ie - Actor.ownerID
+    // if (entry[objKey] === undefined)
+    //   return {
+    //     ...obj,
+    //     [parts.slice(1).join('')]: entry[parts.slice(1).join('')],
+    //   }
+
+    // Return the value
     return {
       ...obj,
-      [key]: entry[splitKey.join('')],
+      [newKey]: entry[objKey],
     }
   }, {})
 }
+
+export const resetCombatLog = createAsyncThunk(`${name}/reset`, (action, api) => {
+  try {
+    api.dispatch(removeCombatants())
+    return true
+  } catch (err) {
+    console.error(err)
+    return api.rejectWithValue(null)
+  }
+})
 
 export const updateCombatLog = createAsyncThunk(`${name}/update`, ({ id, line }, api) => {
   const entry = parse(line)
@@ -75,7 +95,7 @@ export const updateCombatLog = createAsyncThunk(`${name}/update`, ({ id, line },
 // CombatLog Slice
 export const combatLog = createSlice({
   name: 'combatLog',
-  initialState: _getState(),
+  initialState, // _getState(),
   reducers: {
     add: (state, action) => {
       // console.log('Create Combat Log: ', action.payload)
@@ -87,6 +107,7 @@ export const combatLog = createSlice({
       const log = Utils.getObjValue(state, action.payload?.id)
       if (log) log.push(format(action.payload.entry))
     })
+    builder.addCase(resetCombatLog.fulfilled, () => initialState)
   },
 })
 

@@ -14,22 +14,31 @@ const _xivapi = {
   },
 }
 
+const customJobs = {
+  // Pet
+  0: {
+    id: '00',
+    icon: '/pet.png',
+    displayName: 'Summon',
+    code: 'PET',
+    role: 0,
+  },
+  // Monster
+  255: {
+    id: 'FF',
+    icon: '/monster.png',
+    displayName: 'Monster',
+    code: 'Monster',
+    role: 255,
+  },
+}
+
 function _url(str) {
   return `${[_xivapi.url, ...str].join('/')}?api_key=${_xivapi.key}`
 }
 
 function _format(str) {
   return str.replace(/(\n{3,})/gm, '\n\n').replace(/<br \/>+/gm, '')
-}
-
-function _replaceJob(id) {
-  return {
-    id,
-    icon: '/pet.png',
-    displayName: 'Summon',
-    code: 'PET',
-    role: 0,
-  }
 }
 
 function _replaceIcon(id, icon) {
@@ -72,18 +81,17 @@ async function _getAction(id) {
 }
 
 async function _getClassJob(id) {
+  if (Object.keys(customJobs).includes(String(id))) return customJobs[id]
+
   return axios
     .get(_url(['ClassJob', id]))
-    .then((response) => {
-      if (id === 0) throw new Error()
-      return {
-        id: response.data.ID,
-        icon: `${_xivapi.url}${response.data.Icon}`,
-        displayName: Utils.capitalize(response.data.Name_en),
-        code: response.data.Abbreviation_en,
-        role: response.data.Role,
-      }
-    })
+    .then((response) => ({
+      id: response.data.ID,
+      icon: `${_xivapi.url}${response.data.Icon}`,
+      displayName: Utils.capitalize(response.data.Name_en),
+      code: response.data.Abbreviation_en,
+      role: response.data.Role,
+    }))
     .catch((err) => {
       console.error(err)
       throw err
@@ -113,10 +121,9 @@ export function get(type, id) {
       return Promise.resolve(true)
         .then(() => _getAction(id))
         .catch((err) => _replaceAction(id))
-    case 'ClassJob':
-      return Promise.resolve(true)
-        .then(() => _getClassJob(id))
-        .catch((err) => _replaceJob(id))
+    case 'ClassJob': {
+      return Promise.resolve(true).then(() => _getClassJob(id))
+    }
     case 'Effect':
       return Promise.resolve(true).then(() => _getEffect(id))
     default:

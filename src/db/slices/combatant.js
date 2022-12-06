@@ -2,7 +2,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 // Import our components
-import { selectVersion } from 'db/slices/version'
 import { updateJob } from 'db/slices/job'
 
 import * as Storage from 'toolkits/storage'
@@ -11,21 +10,21 @@ import * as Utils from 'toolkits/utils'
 const name = 'combatant'
 const initialState = {}
 
-function getState() {
-  try {
-    const persistentState = Utils.getObjValue(Storage.get(`redux`), name) || {}
-    const state = { ...initialState }
+// function getState() {
+//   try {
+//     const persistentState = Utils.getObjValue(Storage.get(`redux`), name) || {}
+//     const state = { ...initialState }
 
-    Utils.getObjPaths(persistentState, (key, val) => {
-      Utils.setObjValue(state, key, val)
-    })
+//     Utils.getObjPaths(persistentState, (key, val) => {
+//       Utils.setObjValue(state, key, val)
+//     })
 
-    return state
-  } catch (err) {
-    console.error(err)
-    return initialState
-  }
-}
+//     return state
+//   } catch (err) {
+//     console.error(err)
+//     return initialState
+//   }
+// }
 
 function _getCombatant(state, id) {
   return Utils.getObjValue(state.combatant, id)
@@ -49,11 +48,12 @@ export const updateCombatant = createAsyncThunk(`${name}/update`, (actor, api) =
 // Combatant Slice
 export const combatant = createSlice({
   name: 'combatant',
-  initialState: getState(),
+  initialState, // getState(),
   reducers: {
     remove: (state, { payload }) => {
       delete state[payload.actorID]
     },
+    removeAll: () => initialState,
   },
   extraReducers: (builder) => {
     builder.addCase(updateCombatant.fulfilled, (state, { payload }) => {
@@ -64,7 +64,7 @@ export const combatant = createSlice({
 })
 
 // Reducer functions
-export const { remove: removeCombatant } = combatant.actions
+export const { remove: removeCombatant, removeAll: removeCombatants } = combatant.actions
 
 // Selector functions
 export const selectCombatant = (state, id) => _getCombatant(state, id)

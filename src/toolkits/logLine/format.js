@@ -1,6 +1,14 @@
 // Import our components
 import * as Utils from 'toolkits/utils'
 
+function _isMonster(obj) {
+  return obj.actorJob === '00' && obj.ownerID === '0000'
+}
+
+function _isPet(obj) {
+  return obj.actorJob === '00' && obj.ownerID !== '0000'
+}
+
 function _f(field, obj) {
   switch (field) {
     // Players & Pets & NPCs
@@ -8,7 +16,7 @@ function _f(field, obj) {
     case 'ownerID':
     case 'sourceID':
     case 'targetID': {
-      return `@combatant|${obj[field]}@`
+      return `@combatant|${obj[field]}${field !== 'ownerID' ? `|${obj.ownerID}` : ''}@`
     }
 
     // Actions
@@ -72,8 +80,6 @@ function _f(field, obj) {
  * @see https://github.com/quisquous/cactbot/blob/4eb2d4a4802b8d1968c702b56d11cdb75f58f6cc/docs/LogGuide.md#entry-03-0x03-addcombatant
  */
 function addCombatant(obj) {
-  const isPet = Utils.h2d(obj.ownerID) > 0
-
   // console.log(
   //   'AddCombatant',
   //   ts,
@@ -93,7 +99,7 @@ function addCombatant(obj) {
   //   actorZ,
   //   actorFacing
   // )
-  return isPet ? `${_f('ownerID', obj)} ${_f('actorID', obj)} has appeared somewhere nearby` : `${_f('actorID', obj)} has appeared somewhere nearby`
+  return _isPet(obj) ? `${_f('ownerID', obj)} ${_f('actorID', obj)} has appeared somewhere nearby` : `${_f('actorID', obj)} has appeared somewhere nearby`
 }
 
 /**

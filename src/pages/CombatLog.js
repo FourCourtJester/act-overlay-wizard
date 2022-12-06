@@ -8,7 +8,7 @@ import { nanoid } from 'nanoid'
 import { WebSocket } from 'contexts'
 import { useEffectOnce } from 'components/hooks'
 import { CombatLogEntry } from 'components/combatLog'
-import { addCombatLog, selectCombatLog, updateCombatLog } from 'db/slices/combatLog'
+import { addCombatLog, resetCombatLog, selectCombatLog, updateCombatLog } from 'db/slices/combatLog'
 
 // Import style
 // ...
@@ -65,7 +65,7 @@ function CombatLog() {
 
     return () => {
       ws.off('connect', ['CombatLog'])
-      ws.off('LogLine', ['CombatLog', 'Combatant'])
+      ws.off('LogLine', ['CombatLog'])
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -90,7 +90,7 @@ function CombatLog() {
             <ViewportList initialAlignToTop={false} overflowAnchor="none" items={combatLog} ref={$log} viewportRef={$scroll}>
               {(entry, i) => <CombatLogEntry key={i} entry={entry} />}
             </ViewportList>
-            <div id="anchor" />
+            <div key="anchor" id="anchor" />
           </div>
         </div>
       </div>
