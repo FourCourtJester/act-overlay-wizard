@@ -113,7 +113,6 @@ class WS {
 
         // Cleanly reset the socket
         this.ws.close()
-        this.ws = undefined
 
         if (!this.settings.intentional.disconnect) {
           this.settings.first.connect = false
@@ -136,9 +135,11 @@ class WS {
   /**
    * Disconnect the WebSocket from the server
    *
+   * @param {boolean} intentional
    */
-  disconnect() {
-    if (this.ws) this.ws.close()
+  disconnect(intentional = false) {
+    this.settings.intentional.disconnect = intentional
+    this.ws.close()
   }
 
   /**

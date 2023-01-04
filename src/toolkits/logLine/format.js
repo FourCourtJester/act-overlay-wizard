@@ -345,6 +345,12 @@ function gainTether(obj) {
   return `${_f('actorID', obj)} gains the tether ${_f('tetherID', obj)} from ${_f('sourceID', obj)}`
 }
 
+export function fixTags(entry) {
+  return entry
+    .replace(/<UIGlow>01<\/UIGlow><UIForeground>01<\/UIForeground>/g, '</span>')
+    .replace(/<UIForeground>([\w\d]+)<\/UIForeground><UIGlow>[\w\d]+<\/UIGlow>/g, '<span style="color:#$1">')
+}
+
 export function format(entry) {
   const { event } = entry
 

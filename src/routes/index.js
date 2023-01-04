@@ -1,1 +1,1 @@
-export { default as FFXIVRoute } from './CombatLog'
+export { default as FFXIVRoute } from './FFXIV'

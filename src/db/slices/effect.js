@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 // Import our components
 import { selectVersion } from 'db/slices/version'
+import { fixTags } from 'toolkits/logLine'
 
 import * as Storage from 'toolkits/storage'
 import * as Utils from 'toolkits/utils'
@@ -10,6 +11,12 @@ import * as XIVAPI from 'toolkits/xivapi'
 
 const name = 'effect'
 const initialState = {}
+
+function _parse(description) {
+  if (!description) return description
+
+  return fixTags(description)
+}
 
 function _getState() {
   try {
@@ -50,6 +57,7 @@ export const updateEffect = createAsyncThunk(`${name}/update`, async (data, api)
     return {
       ...newEffect,
       id: data.effectID,
+      description: _parse(newEffect?.description),
       version,
     }
   } catch (err) {

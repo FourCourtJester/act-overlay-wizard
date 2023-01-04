@@ -13,6 +13,7 @@ import { updateEffect } from './effect'
 
 const name = 'combatLog'
 const initialState = {}
+const queue = Promise.resolve()
 
 // function _getState() {
 //   try {
@@ -64,33 +65,35 @@ export const resetCombatLog = createAsyncThunk(`${name}/reset`, (action, api) =>
   }
 })
 
-export const updateCombatLog = createAsyncThunk(`${name}/update`, ({ id, line }, api) => {
-  const entry = parse(line)
+export const updateCombatLog = createAsyncThunk(`${name}/update`, ({ id, line }, api) =>
+  queue.then(() => {
+    try {
+      const entry = parse(line)
 
-  try {
-    if (!Object.keys(entry).length) throw new Error()
-    if (!entry?._entities) throw new Error()
+      if (!Object.keys(entry).length) throw new Error()
+      if (!entry?._entities) throw new Error()
 
-    const { actions, actors, effects, owners, marks, sources, targets, tethers } = entry._entities
-    const promises = []
+      const { actions, actors, effects, owners, marks, sources, targets, tethers } = entry._entities
+      const promises = []
 
-    // Actor entities
-    promises.push(api.dispatch(updateCombatant(reduce(entry, actors, 'actor'))))
-    promises.push(api.dispatch(updateCombatant(reduce(entry, owners, 'actor'))))
-    promises.push(api.dispatch(updateCombatant(reduce(entry, sources, 'actor'))))
-    promises.push(api.dispatch(updateCombatant(reduce(entry, targets, 'actor'))))
+      // Actor entities
+      promises.push(api.dispatch(updateCombatant(reduce(entry, actors, 'actor'))))
+      promises.push(api.dispatch(updateCombatant(reduce(entry, owners, 'actor'))))
+      promises.push(api.dispatch(updateCombatant(reduce(entry, sources, 'actor'))))
+      promises.push(api.dispatch(updateCombatant(reduce(entry, targets, 'actor'))))
 
-    // Action entities
-    promises.push(api.dispatch(updateAction(reduce(entry, actions))))
+      // Action entities
+      promises.push(api.dispatch(updateAction(reduce(entry, actions))))
 
-    // Effect entities
-    promises.push(api.dispatch(updateEffect(reduce(entry, effects))))
+      // Effect entities
+      promises.push(api.dispatch(updateEffect(reduce(entry, effects))))
 
-    return Promise.all(promises).then(() => ({ entry, id }))
-  } catch (err) {
-    return api.rejectWithValue(null)
-  }
-})
+      return Promise.all(promises).then(() => ({ id, entry: format(entry) }))
+    } catch (err) {
+      return api.rejectWithValue(null)
+    }
+  })
+)
 
 // CombatLog Slice
 export const combatLog = createSlice({
@@ -104,8 +107,7 @@ export const combatLog = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(updateCombatLog.fulfilled, (state, action) => {
-      const log = Utils.getObjValue(state, action.payload?.id)
-      if (log) log.push(format(action.payload.entry))
+      Utils.getObjValue(state, action.payload?.id)?.push(action.payload.entry)
     })
     builder.addCase(resetCombatLog.fulfilled, () => initialState)
   },

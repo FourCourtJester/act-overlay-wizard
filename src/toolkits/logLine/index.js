@@ -1,2 +1,2 @@
-export { format } from './format'
+export { fixTags, format } from './format'
 export { parse } from './parse'
